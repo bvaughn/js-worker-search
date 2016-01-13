@@ -14,6 +14,10 @@ export default class SearchApi {
     } else {
       this._search = new SearchUtility()
     }
+
+    // Prevent methods from losing context when passed around.
+    this.indexDocument = this.indexDocument.bind(this)
+    this.search = this.search.bind(this)
   }
 
   /**

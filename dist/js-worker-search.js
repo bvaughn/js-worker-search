@@ -109,6 +109,19 @@ module.exports =
 	    } else {
 	      this._search = new _util2.default();
 	    }
+	
+	    // Prevent methods from losing context when passed around.
+	    this.indexDocument = this.indexDocument.bind(this);
+	
+	    if (!(typeof this.indexDocument === 'function')) {
+	      throw new TypeError('Value of "this.indexDocument" violates contract, expected (any, string) => SearchApi got ' + (this.indexDocument === null ? 'null' : _typeof(this.indexDocument) === 'object' && this.indexDocument.constructor ? this.indexDocument.constructor.name || '[Unknown Object]' : _typeof(this.indexDocument)));
+	    }
+	
+	    this.search = this.search.bind(this);
+	
+	    if (!(typeof this.search === 'function')) {
+	      throw new TypeError('Value of "this.search" violates contract, expected (string) => Promise got ' + (this.search === null ? 'null' : _typeof(this.search) === 'object' && this.search.constructor ? this.search.constructor.name || '[Unknown Object]' : _typeof(this.search)));
+	    }
 	  }
 	
 	  /**
