@@ -5,7 +5,6 @@ js-worker-search
 ![NPM license](https://img.shields.io/npm/l/js-worker-search.svg)
 ![NPM total downloads](https://img.shields.io/npm/dt/js-worker-search.svg)
 ![NPM monthly downloads](https://img.shields.io/npm/dm/js-worker-search.svg)
-[![Circle CI badge](https://img.shields.io/circleci/project/bvaughn/js-worker-search/master.svg)](https://circleci.com/gh/bvaughn/js-worker-search)
 
 Full text client-side search based on [js-search](https://github.com/bvaughn/js-search) but with added web-worker support for better performance.
 
