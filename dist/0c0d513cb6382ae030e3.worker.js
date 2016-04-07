@@ -106,7 +106,9 @@
 
 	'use strict';
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -118,8 +120,6 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
-	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	/**
@@ -127,7 +127,7 @@
 	 * Forked from JS search (github.com/bvaughn/js-search).
 	 */
 	
-	var SearchUtility = (function () {
+	var SearchUtility = function () {
 	
 	  /**
 	   * Constructor.
@@ -155,14 +155,14 @@
 	
 	      function _ref(_id) {
 	        if (!(_id instanceof SearchUtility)) {
-	          throw new TypeError('Function return value violates contract, expected SearchUtility got ' + (_id === null ? 'null' : (typeof _id === 'undefined' ? 'undefined' : _typeof(_id)) === 'object' && _id.constructor ? _id.constructor.name || '[Unknown Object]' : typeof _id === 'undefined' ? 'undefined' : _typeof(_id)));
+	          throw new TypeError('Function return value violates contract.\n\nExpected:\nSearchUtility\n\nGot:\n' + _inspect(_id));
 	        }
 	
 	        return _id;
 	      }
 	
 	      if (!(typeof text === 'string')) {
-	        throw new TypeError('Value of argument "text" violates contract, expected string got ' + (text === null ? 'null' : (typeof text === 'undefined' ? 'undefined' : _typeof(text)) === 'object' && text.constructor ? text.constructor.name || '[Unknown Object]' : typeof text === 'undefined' ? 'undefined' : _typeof(text)));
+	        throw new TypeError('Value of argument "text" violates contract.\n\nExpected:\nstring\n\nGot:\n' + _inspect(text));
 	      }
 	
 	      this.uids[uid] = true;
@@ -172,7 +172,7 @@
 	      if (!(Array.isArray(fieldTokens) && fieldTokens.every(function (item) {
 	        return typeof item === 'string';
 	      }))) {
-	        throw new TypeError('Value of variable "fieldTokens" violates contract, expected Array<string> got ' + (fieldTokens === null ? 'null' : (typeof fieldTokens === 'undefined' ? 'undefined' : _typeof(fieldTokens)) === 'object' && fieldTokens.constructor ? fieldTokens.constructor.name || '[Unknown Object]' : typeof fieldTokens === 'undefined' ? 'undefined' : _typeof(fieldTokens)));
+	        throw new TypeError('Value of variable "fieldTokens" violates contract.\n\nExpected:\nArray<string>\n\nGot:\n' + _inspect(fieldTokens));
 	      }
 	
 	      fieldTokens.forEach(function (fieldToken) {
@@ -181,7 +181,7 @@
 	        if (!(Array.isArray(expandedTokens) && expandedTokens.every(function (item) {
 	          return typeof item === 'string';
 	        }))) {
-	          throw new TypeError('Value of variable "expandedTokens" violates contract, expected Array<string> got ' + (expandedTokens === null ? 'null' : (typeof expandedTokens === 'undefined' ? 'undefined' : _typeof(expandedTokens)) === 'object' && expandedTokens.constructor ? expandedTokens.constructor.name || '[Unknown Object]' : typeof expandedTokens === 'undefined' ? 'undefined' : _typeof(expandedTokens)));
+	          throw new TypeError('Value of variable "expandedTokens" violates contract.\n\nExpected:\nArray<string>\n\nGot:\n' + _inspect(expandedTokens));
 	        }
 	
 	        expandedTokens.forEach(function (expandedToken) {
@@ -209,14 +209,14 @@
 	    value: function search(query) {
 	      function _ref2(_id2) {
 	        if (!Array.isArray(_id2)) {
-	          throw new TypeError('Function return value violates contract, expected Array<any> got ' + (_id2 === null ? 'null' : (typeof _id2 === 'undefined' ? 'undefined' : _typeof(_id2)) === 'object' && _id2.constructor ? _id2.constructor.name || '[Unknown Object]' : typeof _id2 === 'undefined' ? 'undefined' : _typeof(_id2)));
+	          throw new TypeError('Function return value violates contract.\n\nExpected:\nArray<any>\n\nGot:\n' + _inspect(_id2));
 	        }
 	
 	        return _id2;
 	      }
 	
 	      if (!(typeof query === 'string')) {
-	        throw new TypeError('Value of argument "query" violates contract, expected string got ' + (query === null ? 'null' : (typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object' && query.constructor ? query.constructor.name || '[Unknown Object]' : typeof query === 'undefined' ? 'undefined' : _typeof(query)));
+	        throw new TypeError('Value of argument "query" violates contract.\n\nExpected:\nstring\n\nGot:\n' + _inspect(query));
 	      }
 	
 	      if (!query) {
@@ -227,7 +227,7 @@
 	        if (!(Array.isArray(tokens) && tokens.every(function (item) {
 	          return typeof item === 'string';
 	        }))) {
-	          throw new TypeError('Value of variable "tokens" violates contract, expected Array<string> got ' + (tokens === null ? 'null' : (typeof tokens === 'undefined' ? 'undefined' : _typeof(tokens)) === 'object' && tokens.constructor ? tokens.constructor.name || '[Unknown Object]' : typeof tokens === 'undefined' ? 'undefined' : _typeof(tokens)));
+	          throw new TypeError('Value of variable "tokens" violates contract.\n\nExpected:\nArray<string>\n\nGot:\n' + _inspect(tokens));
 	        }
 	
 	        return _ref2(this.searchIndex.search(tokens));
@@ -247,30 +247,40 @@
 	        if (!(Array.isArray(_id3) && _id3.every(function (item) {
 	          return typeof item === 'string';
 	        }))) {
-	          throw new TypeError('Function return value violates contract, expected Array<string> got ' + (_id3 === null ? 'null' : (typeof _id3 === 'undefined' ? 'undefined' : _typeof(_id3)) === 'object' && _id3.constructor ? _id3.constructor.name || '[Unknown Object]' : typeof _id3 === 'undefined' ? 'undefined' : _typeof(_id3)));
+	          throw new TypeError('Function return value violates contract.\n\nExpected:\nArray<string>\n\nGot:\n' + _inspect(_id3));
 	        }
 	
 	        return _id3;
 	      }
 	
 	      if (!(typeof token === 'string')) {
-	        throw new TypeError('Value of argument "token" violates contract, expected string got ' + (token === null ? 'null' : (typeof token === 'undefined' ? 'undefined' : _typeof(token)) === 'object' && token.constructor ? token.constructor.name || '[Unknown Object]' : typeof token === 'undefined' ? 'undefined' : _typeof(token)));
+	        throw new TypeError('Value of argument "token" violates contract.\n\nExpected:\nstring\n\nGot:\n' + _inspect(token));
 	      }
 	
 	      var expandedTokens = [];
 	
-	      for (var i = 0, length = token.length; i < length; ++i) {
-	        var prefixString = '';
+	      // String.prototype.charAt() may return surrogate halves instead of whole characters.
+	      // When this happens in the context of a web-worker it can cause Chrome to crash.
+	      // Catching the error is a simple solution for now; in the future I may try to better support non-BMP characters.
+	      // Resources:
+	      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt
+	      // https://mathiasbynens.be/notes/javascript-unicode
+	      try {
+	        for (var i = 0, length = token.length; i < length; ++i) {
+	          var prefixString = '';
 	
-	        for (var j = i; j < length; ++j) {
-	          prefixString += token.charAt(j);
+	          for (var j = i; j < length; ++j) {
+	            prefixString += token.charAt(j);
 	
-	          if (!(typeof prefixString === 'string')) {
-	            throw new TypeError('Value of variable "prefixString" violates contract, expected string got ' + (prefixString === null ? 'null' : (typeof prefixString === 'undefined' ? 'undefined' : _typeof(prefixString)) === 'object' && prefixString.constructor ? prefixString.constructor.name || '[Unknown Object]' : typeof prefixString === 'undefined' ? 'undefined' : _typeof(prefixString)));
+	            if (!(typeof prefixString === 'string')) {
+	              throw new TypeError('Value of variable "prefixString" violates contract.\n\nExpected:\nstring\n\nGot:\n' + _inspect(prefixString));
+	            }
+	
+	            expandedTokens.push(prefixString);
 	          }
-	
-	          expandedTokens.push(prefixString);
 	        }
+	      } catch (error) {
+	        console.error('Unable to parse token "' + token + '" ' + error);
 	      }
 	
 	      return _ref3(expandedTokens);
@@ -285,14 +295,14 @@
 	    value: function _sanitize(string) {
 	      function _ref4(_id4) {
 	        if (!(typeof _id4 === 'string')) {
-	          throw new TypeError('Function return value violates contract, expected string got ' + (_id4 === null ? 'null' : (typeof _id4 === 'undefined' ? 'undefined' : _typeof(_id4)) === 'object' && _id4.constructor ? _id4.constructor.name || '[Unknown Object]' : typeof _id4 === 'undefined' ? 'undefined' : _typeof(_id4)));
+	          throw new TypeError('Function return value violates contract.\n\nExpected:\nstring\n\nGot:\n' + _inspect(_id4));
 	        }
 	
 	        return _id4;
 	      }
 	
 	      if (!(typeof string === 'string')) {
-	        throw new TypeError('Value of argument "string" violates contract, expected string got ' + (string === null ? 'null' : (typeof string === 'undefined' ? 'undefined' : _typeof(string)) === 'object' && string.constructor ? string.constructor.name || '[Unknown Object]' : typeof string === 'undefined' ? 'undefined' : _typeof(string)));
+	        throw new TypeError('Value of argument "string" violates contract.\n\nExpected:\nstring\n\nGot:\n' + _inspect(string));
 	      }
 	
 	      return _ref4(string.trim().toLocaleLowerCase());
@@ -309,14 +319,14 @@
 	        if (!(Array.isArray(_id5) && _id5.every(function (item) {
 	          return typeof item === 'string';
 	        }))) {
-	          throw new TypeError('Function return value violates contract, expected Array<string> got ' + (_id5 === null ? 'null' : (typeof _id5 === 'undefined' ? 'undefined' : _typeof(_id5)) === 'object' && _id5.constructor ? _id5.constructor.name || '[Unknown Object]' : typeof _id5 === 'undefined' ? 'undefined' : _typeof(_id5)));
+	          throw new TypeError('Function return value violates contract.\n\nExpected:\nArray<string>\n\nGot:\n' + _inspect(_id5));
 	        }
 	
 	        return _id5;
 	      }
 	
 	      if (!(typeof text === 'string')) {
-	        throw new TypeError('Value of argument "text" violates contract, expected string got ' + (text === null ? 'null' : (typeof text === 'undefined' ? 'undefined' : _typeof(text)) === 'object' && text.constructor ? text.constructor.name || '[Unknown Object]' : typeof text === 'undefined' ? 'undefined' : _typeof(text)));
+	        throw new TypeError('Value of argument "text" violates contract.\n\nExpected:\nstring\n\nGot:\n' + _inspect(text));
 	      }
 	
 	      return _ref5(text.split(/\s+/).filter(function (text) {
@@ -326,9 +336,53 @@
 	  }]);
 	
 	  return SearchUtility;
-	})();
+	}();
 	
 	exports.default = SearchUtility;
+	
+	function _inspect(input) {
+	  if (input === null) {
+	    return 'null';
+	  } else if (input === undefined) {
+	    return 'void';
+	  } else if (typeof input === 'string' || typeof input === 'number' || typeof input === 'boolean') {
+	    return typeof input === 'undefined' ? 'undefined' : _typeof(input);
+	  } else if (Array.isArray(input)) {
+	    if (input.length > 0) {
+	      var first = _inspect(input[0]);
+
+	      if (input.every(function (item) {
+	        return _inspect(item) === first;
+	      })) {
+	        return first.trim() + '[]';
+	      } else {
+	        return '[' + input.map(_inspect).join(', ') + ']';
+	      }
+	    } else {
+	      return 'Array';
+	    }
+	  } else {
+	    var keys = Object.keys(input);
+
+	    if (!keys.length) {
+	      if (input.constructor && input.constructor.name && input.constructor.name !== 'Object') {
+	        return input.constructor.name;
+	      } else {
+	        return 'Object';
+	      }
+	    }
+
+	    var entries = keys.map(function (key) {
+	      return (/^([A-Z_$][A-Z0-9_$]*)$/i.test(key) ? key : JSON.stringify(key)) + ': ' + _inspect(input[key]) + ';';
+	    }).join('\n  ');
+
+	    if (input.constructor && input.constructor.name && input.constructor.name !== 'Object') {
+	      return input.constructor.name + ' {\n  ' + entries + '\n}';
+	    } else {
+	      return '{ ' + entries + '\n}';
+	    }
+	  }
+	}
 
 /***/ },
 /* 3 */
@@ -336,13 +390,13 @@
 
 	"use strict";
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	
-	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -352,7 +406,7 @@
 	 * Forked from JS search (github.com/bvaughn/js-search).
 	 */
 	
-	var SearchIndex = (function () {
+	var SearchIndex = function () {
 	  function SearchIndex() {
 	    _classCallCheck(this, SearchIndex);
 	
@@ -370,7 +424,7 @@
 	    key: "indexDocument",
 	    value: function indexDocument(token, uid) {
 	      if (!(typeof token === 'string')) {
-	        throw new TypeError("Value of argument \"token\" violates contract, expected string got " + (token === null ? 'null' : (typeof token === "undefined" ? "undefined" : _typeof(token)) === 'object' && token.constructor ? token.constructor.name || '[Unknown Object]' : typeof token === "undefined" ? "undefined" : _typeof(token)));
+	        throw new TypeError("Value of argument \"token\" violates contract.\n\nExpected:\nstring\n\nGot:\n" + _inspect(token));
 	      }
 	
 	      if (!this.tokenToUidMap[token]) {
@@ -395,7 +449,7 @@
 	
 	      function _ref2(_id2) {
 	        if (!Array.isArray(_id2)) {
-	          throw new TypeError("Function return value violates contract, expected Array<any> got " + (_id2 === null ? 'null' : (typeof _id2 === "undefined" ? "undefined" : _typeof(_id2)) === 'object' && _id2.constructor ? _id2.constructor.name || '[Unknown Object]' : typeof _id2 === "undefined" ? "undefined" : _typeof(_id2)));
+	          throw new TypeError("Function return value violates contract.\n\nExpected:\nArray<any>\n\nGot:\n" + _inspect(_id2));
 	        }
 	
 	        return _id2;
@@ -404,13 +458,13 @@
 	      if (!(Array.isArray(tokens) && tokens.every(function (item) {
 	        return typeof item === 'string';
 	      }))) {
-	        throw new TypeError("Value of argument \"tokens\" violates contract, expected Array<string> got " + (tokens === null ? 'null' : (typeof tokens === "undefined" ? "undefined" : _typeof(tokens)) === 'object' && tokens.constructor ? tokens.constructor.name || '[Unknown Object]' : typeof tokens === "undefined" ? "undefined" : _typeof(tokens)));
+	        throw new TypeError("Value of argument \"tokens\" violates contract.\n\nExpected:\nArray<string>\n\nGot:\n" + _inspect(tokens));
 	      }
 	
 	      var uidMap = {};
 	
 	      if (!(uidMap != null && (typeof uidMap === "undefined" ? "undefined" : _typeof(uidMap)) === 'object')) {
-	        throw new TypeError("Value of variable \"uidMap\" violates contract, expected { [uid: any]: any\n} got " + (uidMap === null ? 'null' : (typeof uidMap === "undefined" ? "undefined" : _typeof(uidMap)) === 'object' && uidMap.constructor ? uidMap.constructor.name || '[Unknown Object]' : typeof uidMap === "undefined" ? "undefined" : _typeof(uidMap)));
+	        throw new TypeError("Value of variable \"uidMap\" violates contract.\n\nExpected:\n{ [uid: any]: any\n}\n\nGot:\n" + _inspect(uidMap));
 	      }
 	
 	      var initialized = false;
@@ -419,7 +473,7 @@
 	        var currentUidMap = _this.tokenToUidMap[token] || {};
 	
 	        if (!(currentUidMap != null && (typeof currentUidMap === "undefined" ? "undefined" : _typeof(currentUidMap)) === 'object')) {
-	          throw new TypeError("Value of variable \"currentUidMap\" violates contract, expected { [uid: any]: any\n} got " + (currentUidMap === null ? 'null' : (typeof currentUidMap === "undefined" ? "undefined" : _typeof(currentUidMap)) === 'object' && currentUidMap.constructor ? currentUidMap.constructor.name || '[Unknown Object]' : typeof currentUidMap === "undefined" ? "undefined" : _typeof(currentUidMap)));
+	          throw new TypeError("Value of variable \"currentUidMap\" violates contract.\n\nExpected:\n{ [uid: any]: any\n}\n\nGot:\n" + _inspect(currentUidMap));
 	        }
 	
 	        if (!initialized) {
@@ -440,7 +494,7 @@
 	      var uids = [];
 	
 	      if (!Array.isArray(uids)) {
-	        throw new TypeError("Value of variable \"uids\" violates contract, expected Array<any> got " + (uids === null ? 'null' : (typeof uids === "undefined" ? "undefined" : _typeof(uids)) === 'object' && uids.constructor ? uids.constructor.name || '[Unknown Object]' : typeof uids === "undefined" ? "undefined" : _typeof(uids)));
+	        throw new TypeError("Value of variable \"uids\" violates contract.\n\nExpected:\nArray<any>\n\nGot:\n" + _inspect(uids));
 	      }
 	
 	      for (var _uid3 in uidMap) {
@@ -452,10 +506,54 @@
 	  }]);
 	
 	  return SearchIndex;
-	})();
+	}();
 	
 	exports.default = SearchIndex;
+	
+	function _inspect(input) {
+	  if (input === null) {
+	    return 'null';
+	  } else if (input === undefined) {
+	    return 'void';
+	  } else if (typeof input === 'string' || typeof input === 'number' || typeof input === 'boolean') {
+	    return typeof input === "undefined" ? "undefined" : _typeof(input);
+	  } else if (Array.isArray(input)) {
+	    if (input.length > 0) {
+	      var first = _inspect(input[0]);
+
+	      if (input.every(function (item) {
+	        return _inspect(item) === first;
+	      })) {
+	        return first.trim() + '[]';
+	      } else {
+	        return '[' + input.map(_inspect).join(', ') + ']';
+	      }
+	    } else {
+	      return 'Array';
+	    }
+	  } else {
+	    var keys = Object.keys(input);
+
+	    if (!keys.length) {
+	      if (input.constructor && input.constructor.name && input.constructor.name !== 'Object') {
+	        return input.constructor.name;
+	      } else {
+	        return 'Object';
+	      }
+	    }
+
+	    var entries = keys.map(function (key) {
+	      return (/^([A-Z_$][A-Z0-9_$]*)$/i.test(key) ? key : JSON.stringify(key)) + ': ' + _inspect(input[key]) + ';';
+	    }).join('\n  ');
+
+	    if (input.constructor && input.constructor.name && input.constructor.name !== 'Object') {
+	      return input.constructor.name + ' {\n  ' + entries + '\n}';
+	    } else {
+	      return '{ ' + entries + '\n}';
+	    }
+	  }
+	}
 
 /***/ }
 /******/ ]);
-//# sourceMappingURL=b93146b1722737f6c785.worker.js.map
+//# sourceMappingURL=0c0d513cb6382ae030e3.worker.js.map
