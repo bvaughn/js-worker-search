@@ -66,13 +66,23 @@ export default class SearchUtility {
   _expandToken (token: string): Array<string> {
     var expandedTokens = []
 
-    for (let i = 0, length = token.length; i < length; ++i) {
-      let prefixString: string = ''
+    // String.prototype.charAt() may return surrogate halves instead of whole characters.
+    // When this happens in the context of a web-worker it can cause Chrome to crash.
+    // Catching the error is a simple solution for now; in the future I may try to better support non-BMP characters.
+    // Resources:
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt
+    // https://mathiasbynens.be/notes/javascript-unicode
+    try {
+      for (let i = 0, length = token.length; i < length; ++i) {
+        let prefixString: string = ''
 
-      for (let j = i; j < length; ++j) {
-        prefixString += token.charAt(j)
-        expandedTokens.push(prefixString)
+        for (let j = i; j < length; ++j) {
+          prefixString += token.charAt(j)
+          expandedTokens.push(prefixString)
+        }
       }
+    } catch (error) {
+      console.error(`Unable to parse token "${token}" ${error}`)
     }
 
     return expandedTokens
