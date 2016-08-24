@@ -1,10 +1,12 @@
 import test from 'tape'
 import SearchWorkerLoader from './SearchWorkerLoader'
+import { INDEX_MODES } from '../util'
 
 class StubWorker {
   constructor () {
     this.indexedDocumentMap = {}
     this.searchQueue = []
+    this.setIndexModeQueue = []
   }
 
   postMessage (data) {
@@ -22,6 +24,10 @@ class StubWorker {
         const { callbackId, query } = props
         this.searchQueue.push({ callbackId, query })
         break
+      case 'setIndexMode':
+        const { indexMode } = props
+        this.setIndexModeQueue.push({ indexMode })
+        break
     }
   }
 
@@ -37,7 +43,7 @@ class StubWorker {
 }
 
 test('SearchWorkerLoader indexDocument should index a document with the specified text(s)', t => {
-  const search = new SearchWorkerLoader(StubWorker)
+  const search = new SearchWorkerLoader({ WorkerClass: StubWorker })
   search.indexDocument('a', 'cat')
   search.indexDocument('a', 'dog')
   search.indexDocument('b', 'cat')
@@ -51,7 +57,7 @@ test('SearchWorkerLoader indexDocument should index a document with the specifie
 })
 
 test('SearchWorkerLoader search should search for the specified text', t => {
-  const search = new SearchWorkerLoader(StubWorker)
+  const search = new SearchWorkerLoader({ WorkerClass: StubWorker })
   search.search('cat')
   t.equal(search.worker.searchQueue.length, 1)
   t.equal(search.worker.searchQueue[0].query, 'cat')
@@ -59,7 +65,7 @@ test('SearchWorkerLoader search should search for the specified text', t => {
 })
 
 test('SearchWorkerLoader search should resolve the returned Promise on search completion', async t => {
-  const search = new SearchWorkerLoader(StubWorker)
+  const search = new SearchWorkerLoader({ WorkerClass: StubWorker })
   const promise = search.search('cat')
   search.worker.resolveSearch(0, ['a', 'b'])
 
@@ -69,7 +75,7 @@ test('SearchWorkerLoader search should resolve the returned Promise on search co
 })
 
 test('SearchWorkerLoader search should resolve multiple concurrent searches', async t => {
-  const search = new SearchWorkerLoader(StubWorker)
+  const search = new SearchWorkerLoader({ WorkerClass: StubWorker })
   const promises = Promise.all([
     search.search('cat'),
     search.search('dog')
@@ -81,7 +87,7 @@ test('SearchWorkerLoader search should resolve multiple concurrent searches', as
 })
 
 test('SearchWorkerLoader search should resolve searches in the correct order', async t => {
-  const search = new SearchWorkerLoader(StubWorker)
+  const search = new SearchWorkerLoader({ WorkerClass: StubWorker })
   const results = []
   const promiseList = [
     search.search('cat'),
@@ -102,7 +108,7 @@ test('SearchWorkerLoader search should resolve searches in the correct order', a
 })
 
 test('SearchWorkerLoader search should not reject all searches if one fails', async t => {
-  const search = new SearchWorkerLoader(StubWorker)
+  const search = new SearchWorkerLoader({ WorkerClass: StubWorker })
   const errors = []
   const results = []
   const promises = [
@@ -125,5 +131,21 @@ test('SearchWorkerLoader search should not reject all searches if one fails', as
   t.deepLooseEqual(results[0], ['0'])
   t.equal(errors.length, 1)
   t.equal(errors[0].message, '1')
+  t.end()
+})
+
+test('SearchWorkerLoader should pass the specified :indexMode to the WorkerClass', t => {
+  const search = new SearchWorkerLoader({
+    indexMode: INDEX_MODES.EXACT_WORDS,
+    WorkerClass: StubWorker
+  })
+  t.equal(search.worker.setIndexModeQueue.length, 1)
+  t.equal(search.worker.setIndexModeQueue[0].indexMode, INDEX_MODES.EXACT_WORDS)
+  t.end()
+})
+
+test('SearchWorkerLoader should not override the default :indexMode in the WorkerClass if an override is not requested', t => {
+  const search = new SearchWorkerLoader({ WorkerClass: StubWorker })
+  t.equal(search.worker.setIndexModeQueue.length, 0)
   t.end()
 })

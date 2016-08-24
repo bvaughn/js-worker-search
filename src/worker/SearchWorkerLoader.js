@@ -9,7 +9,10 @@ export default class SearchWorkerLoader {
   /**
    * Constructor.
    */
-  constructor (WorkerClass) {
+  constructor ({
+    indexMode,
+    WorkerClass
+  } = {}) {
     // Defer worker import until construction to avoid testing error:
     // Error: Cannot find module 'worker!./[workername]'
     if (!WorkerClass) {
@@ -31,6 +34,14 @@ export default class SearchWorkerLoader {
     this.worker.onmessage = event => {
       const { callbackId, results } = event.data
       this._updateQueue({ callbackId, results })
+    }
+
+    // Override default :indexMode if a specific one has been requested
+    if (indexMode) {
+      this.worker.postMessage({
+        method: 'setIndexMode',
+        indexMode
+      })
     }
   }
 

@@ -1,3 +1,4 @@
+import { INDEX_MODES } from './constants'
 import SearchIndex from './SearchIndex'
 
 /**
@@ -8,10 +9,23 @@ export default class SearchUtility {
 
   /**
    * Constructor.
+   *
+   * @param indexMode See #setIndexMode
    */
-  constructor () {
+  constructor ({
+    indexMode = INDEX_MODES.ALL_SUBSTRINGS
+  } = {}) {
+    this._indexMode = indexMode
+
     this.searchIndex = new SearchIndex()
     this.uids = {}
+  }
+
+  /**
+   * Returns a constant representing the current index mode.
+   */
+  getIndexMode (): string {
+    return this._indexMode
   }
 
   /**
@@ -26,13 +40,13 @@ export default class SearchUtility {
 
     var fieldTokens: Array<string> = this._tokenize(this._sanitize(text))
 
-    fieldTokens.forEach(fieldToken => {
+    for (let fieldToken of fieldTokens) {
       var expandedTokens: Array<string> = this._expandToken(fieldToken)
 
-      expandedTokens.forEach(expandedToken =>
+      for (let expandedToken of expandedTokens) {
         this.searchIndex.indexDocument(expandedToken, uid)
-      )
-    })
+      }
+    }
 
     return this
   }
@@ -59,12 +73,36 @@ export default class SearchUtility {
   }
 
   /**
+   * Sets a new index mode.
+   * See util/constants/INDEX_MODES
+   */
+  setIndexMode (indexMode: string): void {
+    if (Object.keys(this.uids).length > 0) {
+      throw Error('indexMode cannot be changed once documents have been indexed')
+    }
+
+    this._indexMode = indexMode
+  }
+
+  /**
    * Index strategy based on 'all-substrings-index-strategy.ts' in github.com/bvaughn/js-search/
    *
    * @private
    */
   _expandToken (token: string): Array<string> {
-    var expandedTokens = []
+    switch (this._indexMode) {
+      case INDEX_MODES.EXACT_WORDS:
+        return [token]
+      case INDEX_MODES.PREFIXES:
+        return this._expandPrefixTokens(token)
+      case INDEX_MODES.ALL_SUBSTRINGS:
+      default:
+        return this._expandAllSubstringTokens(token)
+    }
+  }
+
+  _expandAllSubstringTokens (token: string): Array<string> {
+    const expandedTokens = []
 
     // String.prototype.charAt() may return surrogate halves instead of whole characters.
     // When this happens in the context of a web-worker it can cause Chrome to crash.
@@ -74,12 +112,32 @@ export default class SearchUtility {
     // https://mathiasbynens.be/notes/javascript-unicode
     try {
       for (let i = 0, length = token.length; i < length; ++i) {
-        let prefixString: string = ''
+        let substring: string = ''
 
         for (let j = i; j < length; ++j) {
-          prefixString += token.charAt(j)
-          expandedTokens.push(prefixString)
+          substring += token.charAt(j)
+          expandedTokens.push(substring)
         }
+      }
+    } catch (error) {
+      console.error(`Unable to parse token "${token}" ${error}`)
+    }
+
+    return expandedTokens
+  }
+
+  _expandPrefixTokens (token: string): Array<string> {
+    const expandedTokens = []
+
+    // String.prototype.charAt() may return surrogate halves instead of whole characters.
+    // When this happens in the context of a web-worker it can cause Chrome to crash.
+    // Catching the error is a simple solution for now; in the future I may try to better support non-BMP characters.
+    // Resources:
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt
+    // https://mathiasbynens.be/notes/javascript-unicode
+    try {
+      for (let i = 0, length = token.length; i < length; ++i) {
+        expandedTokens.push(token.substr(0, i + 1))
       }
     } catch (error) {
       console.error(`Unable to parse token "${token}" ${error}`)

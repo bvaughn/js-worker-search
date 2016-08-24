@@ -24,5 +24,10 @@ self.addEventListener('message', event => {
 
       self.postMessage({ callbackId, results })
       break
+    case 'setIndexMode':
+      const { indexMode } = data
+
+      searchUtility.setIndexMode(indexMode)
+      break
   }
 }, false)

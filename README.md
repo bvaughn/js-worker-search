@@ -23,6 +23,11 @@ Forked from [JS search](github.com/bvaughn/js-search), this utility builds a sea
 
 SearchApi defines the following public methods:
 
+##### `constructor ({ indexMode })`
+By default, `SearchApi` builds an index to match all substrings.
+You can override this behavior by passing an named `indexMode` parameter.
+Valid values are `INDEX_MODES.ALL_SUBSTRINGS`, `INDEX_MODES.EXACT_WORDS`, and `INDEX_MODES.PREFIXES`.
+
 ##### `indexDocument (uid, text)`
 Adds or updates a uid in the search index and associates it with the specified text. Note that at this time uids can only be added or updated in the index, not removed.
 
@@ -60,6 +65,27 @@ searchApi.indexDocument('bar', 'Text describing an Object identified as "bar"')
 // In this case the promise will be resolved with the Array ['foo', 'bar'].
 // This is because the word "describing" appears in both indices.
 const promise = searchApi.search('describing')
+```
+
+By default, `SearchApi` builds an index to match all substrings.
+You can override this behavior by passing an :indexMode parameter to the constructor like so:
+
+```js
+import SearchApi, { INDEX_MODES } from 'js-worker-search'
+
+// all-substrings match by default; same as current
+// eg "c", "ca", "a", "at", "cat" match "cat"
+const searchApi = new SearchApi()
+
+// prefix matching (eg "c", "ca", "cat" match "cat")
+const searchApi = new SearchApi({
+  indexMode: INDEX_MODES.PREFIXES
+})
+
+// exact words matching (eg only "cat" matches "cat")
+const searchApi = new SearchApi({
+  indexMode: INDEX_MODES.EXACT_WORDS
+})
 ```
 
 Changelog

@@ -1,3 +1,4 @@
+
 import SearchUtility from './util'
 import SearchWorkerLoader from './worker'
 
@@ -6,13 +7,13 @@ import SearchWorkerLoader from './worker'
  * Indexing and searching is performed in the UI thread as a fallback when web workers aren't supported.
  */
 export default class SearchApi {
-  constructor () {
+  constructor ({ indexMode } = {}) {
     // Based on https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
     // But with added check for Node environment
     if (typeof window !== 'undefined' && window.Worker) {
-      this._search = new SearchWorkerLoader()
+      this._search = new SearchWorkerLoader({ indexMode })
     } else {
-      this._search = new SearchUtility()
+      this._search = new SearchUtility({ indexMode })
     }
 
     // Prevent methods from losing context when passed around.
