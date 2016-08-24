@@ -68,7 +68,7 @@ const promise = searchApi.search('describing')
 ```
 
 By default, `SearchApi` builds an index to match all substrings.
-You can override this behavior by passing an :indexMode parameter to the constructor like so:
+You can override this behavior by passing an `indexMode` parameter to the constructor like so:
 
 ```js
 import SearchApi, { INDEX_MODES } from 'js-worker-search'
