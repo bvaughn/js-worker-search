@@ -40,13 +40,13 @@ export default class SearchUtility {
 
     var fieldTokens: Array<string> = this._tokenize(this._sanitize(text))
 
-    for (let fieldToken of fieldTokens) {
+    fieldTokens.forEach(fieldToken => {
       var expandedTokens: Array<string> = this._expandToken(fieldToken)
 
-      for (let expandedToken of expandedTokens) {
+      expandedTokens.forEach(expandedToken => {
         this.searchIndex.indexDocument(expandedToken, uid)
-      }
-    }
+      })
+    })
 
     return this
   }
