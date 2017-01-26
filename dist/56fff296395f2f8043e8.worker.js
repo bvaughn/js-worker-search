@@ -63,16 +63,19 @@
 	  var data = event.data;
 	  var method = data.method;
 	
+	
 	  switch (method) {
 	    case 'indexDocument':
-	      var uid = data.uid;
-	      var text = data.text;
+	      var uid = data.uid,
+	          text = data.text;
+	
 	
 	      searchUtility.indexDocument(uid, text);
 	      break;
 	    case 'search':
-	      var callbackId = data.callbackId;
-	      var query = data.query;
+	      var callbackId = data.callbackId,
+	          query = data.query;
+	
 	
 	      var results = searchUtility.search(query);
 	
@@ -80,6 +83,7 @@
 	      break;
 	    case 'setIndexMode':
 	      var indexMode = data.indexMode;
+	
 	
 	      searchUtility.setIndexMode(indexMode);
 	      break;
@@ -146,13 +150,13 @@
 
 	'use strict';
 	
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _constants = __webpack_require__(2);
 	
@@ -168,7 +172,6 @@
 	 * Synchronous client-side full-text search utility.
 	 * Forked from JS search (github.com/bvaughn/js-search).
 	 */
-	
 	var SearchUtility = function () {
 	
 	  /**
@@ -176,12 +179,10 @@
 	   *
 	   * @param indexMode See #setIndexMode
 	   */
-	
 	  function SearchUtility() {
-	    var _ref10 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	
-	    var _ref10$indexMode = _ref10.indexMode;
-	    var indexMode = _ref10$indexMode === undefined ? _constants.INDEX_MODES.ALL_SUBSTRINGS : _ref10$indexMode;
+	    var _ref10 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+	        _ref10$indexMode = _ref10.indexMode,
+	        indexMode = _ref10$indexMode === undefined ? _constants.INDEX_MODES.ALL_SUBSTRINGS : _ref10$indexMode;
 	
 	    _classCallCheck(this, SearchUtility);
 	
@@ -194,6 +195,7 @@
 	  /**
 	   * Returns a constant representing the current index mode.
 	   */
+	
 	
 	  _createClass(SearchUtility, [{
 	    key: 'getIndexMode',
@@ -220,6 +222,8 @@
 	  }, {
 	    key: 'indexDocument',
 	    value: function indexDocument(uid, text) {
+	      var _this = this;
+	
 	      function _ref2(_id2) {
 	        if (!(_id2 instanceof SearchUtility)) {
 	          throw new TypeError('Function return value violates contract.\n\nExpected:\nSearchUtility\n\nGot:\n' + _inspect(_id2));
@@ -242,69 +246,19 @@
 	        throw new TypeError('Value of variable "fieldTokens" violates contract.\n\nExpected:\nArray<string>\n\nGot:\n' + _inspect(fieldTokens));
 	      }
 	
-	      if (!(fieldTokens && (typeof fieldTokens[Symbol.iterator] === 'function' || Array.isArray(fieldTokens)))) {
-	        throw new TypeError('Expected fieldTokens to be iterable, got ' + _inspect(fieldTokens));
-	      }
+	      fieldTokens.forEach(function (fieldToken) {
+	        var expandedTokens = _this._expandToken(fieldToken);
 	
-	      var _iteratorNormalCompletion = true;
-	      var _didIteratorError = false;
-	      var _iteratorError = undefined;
-	
-	      try {
-	        for (var _iterator = fieldTokens[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	          var fieldToken = _step.value;
-	
-	          var expandedTokens = this._expandToken(fieldToken);
-	
-	          if (!(Array.isArray(expandedTokens) && expandedTokens.every(function (item) {
-	            return typeof item === 'string';
-	          }))) {
-	            throw new TypeError('Value of variable "expandedTokens" violates contract.\n\nExpected:\nArray<string>\n\nGot:\n' + _inspect(expandedTokens));
-	          }
-	
-	          if (!(expandedTokens && (typeof expandedTokens[Symbol.iterator] === 'function' || Array.isArray(expandedTokens)))) {
-	            throw new TypeError('Expected expandedTokens to be iterable, got ' + _inspect(expandedTokens));
-	          }
-	
-	          var _iteratorNormalCompletion2 = true;
-	          var _didIteratorError2 = false;
-	          var _iteratorError2 = undefined;
-	
-	          try {
-	            for (var _iterator2 = expandedTokens[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	              var expandedToken = _step2.value;
-	
-	              this.searchIndex.indexDocument(expandedToken, uid);
-	            }
-	          } catch (err) {
-	            _didIteratorError2 = true;
-	            _iteratorError2 = err;
-	          } finally {
-	            try {
-	              if (!_iteratorNormalCompletion2 && _iterator2.return) {
-	                _iterator2.return();
-	              }
-	            } finally {
-	              if (_didIteratorError2) {
-	                throw _iteratorError2;
-	              }
-	            }
-	          }
+	        if (!(Array.isArray(expandedTokens) && expandedTokens.every(function (item) {
+	          return typeof item === 'string';
+	        }))) {
+	          throw new TypeError('Value of variable "expandedTokens" violates contract.\n\nExpected:\nArray<string>\n\nGot:\n' + _inspect(expandedTokens));
 	        }
-	      } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	      } finally {
-	        try {
-	          if (!_iteratorNormalCompletion && _iterator.return) {
-	            _iterator.return();
-	          }
-	        } finally {
-	          if (_didIteratorError) {
-	            throw _iteratorError;
-	          }
-	        }
-	      }
+	
+	        expandedTokens.forEach(function (expandedToken) {
+	          _this.searchIndex.indexDocument(expandedToken, uid);
+	        });
+	      });
 	
 	      return _ref2(this);
 	    }
@@ -540,7 +494,16 @@
 	
 	exports.default = SearchUtility;
 	
-	function _inspect(input) {
+	function _inspect(input, depth) {
+	  var maxDepth = 4;
+	  var maxKeys = 15;
+
+	  if (depth === undefined) {
+	    depth = 0;
+	  }
+
+	  depth += 1;
+
 	  if (input === null) {
 	    return 'null';
 	  } else if (input === undefined) {
@@ -549,15 +512,29 @@
 	    return typeof input === 'undefined' ? 'undefined' : _typeof(input);
 	  } else if (Array.isArray(input)) {
 	    if (input.length > 0) {
-	      var first = _inspect(input[0]);
+	      var _ret = function () {
+	        if (depth > maxDepth) return {
+	            v: '[...]'
+	          };
 
-	      if (input.every(function (item) {
-	        return _inspect(item) === first;
-	      })) {
-	        return first.trim() + '[]';
-	      } else {
-	        return '[' + input.map(_inspect).join(', ') + ']';
-	      }
+	        var first = _inspect(input[0], depth);
+
+	        if (input.every(function (item) {
+	          return _inspect(item, depth) === first;
+	        })) {
+	          return {
+	            v: first.trim() + '[]'
+	          };
+	        } else {
+	          return {
+	            v: '[' + input.slice(0, maxKeys).map(function (item) {
+	              return _inspect(item, depth);
+	            }).join(', ') + (input.length >= maxKeys ? ', ...' : '') + ']'
+	          };
+	        }
+	      }();
+
+	      if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
 	    } else {
 	      return 'Array';
 	    }
@@ -572,14 +549,20 @@
 	      }
 	    }
 
-	    var entries = keys.map(function (key) {
-	      return (/^([A-Z_$][A-Z0-9_$]*)$/i.test(key) ? key : JSON.stringify(key)) + ': ' + _inspect(input[key]) + ';';
-	    }).join('\n  ');
+	    if (depth > maxDepth) return '{...}';
+	    var indent = '  '.repeat(depth - 1);
+	    var entries = keys.slice(0, maxKeys).map(function (key) {
+	      return (/^([A-Z_$][A-Z0-9_$]*)$/i.test(key) ? key : JSON.stringify(key)) + ': ' + _inspect(input[key], depth) + ';';
+	    }).join('\n  ' + indent);
+
+	    if (keys.length >= maxKeys) {
+	      entries += '\n  ' + indent + '...';
+	    }
 
 	    if (input.constructor && input.constructor.name && input.constructor.name !== 'Object') {
-	      return input.constructor.name + ' {\n  ' + entries + '\n}';
+	      return input.constructor.name + ' {\n  ' + indent + entries + '\n' + indent + '}';
 	    } else {
-	      return '{ ' + entries + '\n}';
+	      return '{\n  ' + indent + entries + '\n' + indent + '}';
 	    }
 	  }
 	}
@@ -590,13 +573,13 @@
 
 	"use strict";
 	
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -605,7 +588,6 @@
 	 * This structure is used by the Search class to optimize search operations.
 	 * Forked from JS search (github.com/bvaughn/js-search).
 	 */
-	
 	var SearchIndex = function () {
 	  function SearchIndex() {
 	    _classCallCheck(this, SearchIndex);
@@ -619,6 +601,7 @@
 	   * @param token Searchable token (e.g. "road")
 	   * @param uid Identifies a document within the searchable corpus
 	   */
+	
 	
 	  _createClass(SearchIndex, [{
 	    key: "indexDocument",
@@ -645,6 +628,8 @@
 	  }, {
 	    key: "search",
 	    value: function search(tokens) {
+	      var _this = this;
+	
 	      function _ref2(_id2) {
 	        if (!Array.isArray(_id2)) {
 	          throw new TypeError("Function return value violates contract.\n\nExpected:\nArray<any>\n\nGot:\n" + _inspect(_id2));
@@ -667,52 +652,27 @@
 	
 	      var initialized = false;
 	
-	      if (!(tokens && (typeof tokens[Symbol.iterator] === 'function' || Array.isArray(tokens)))) {
-	        throw new TypeError("Expected tokens to be iterable, got " + _inspect(tokens));
-	      }
+	      tokens.forEach(function (token) {
+	        var currentUidMap = _this.tokenToUidMap[token] || {};
 	
-	      var _iteratorNormalCompletion = true;
-	      var _didIteratorError = false;
-	      var _iteratorError = undefined;
+	        if (!(currentUidMap != null && (typeof currentUidMap === "undefined" ? "undefined" : _typeof(currentUidMap)) === 'object')) {
+	          throw new TypeError("Value of variable \"currentUidMap\" violates contract.\n\nExpected:\n{ [uid: any]: any\n}\n\nGot:\n" + _inspect(currentUidMap));
+	        }
 	
-	      try {
-	        for (var _iterator = tokens[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	          var _token = _step.value;
+	        if (!initialized) {
+	          initialized = true;
 	
-	          var currentUidMap = this.tokenToUidMap[_token] || {};
-	
-	          if (!(currentUidMap != null && (typeof currentUidMap === "undefined" ? "undefined" : _typeof(currentUidMap)) === 'object')) {
-	            throw new TypeError("Value of variable \"currentUidMap\" violates contract.\n\nExpected:\n{ [uid: any]: any\n}\n\nGot:\n" + _inspect(currentUidMap));
+	          for (var _uid in currentUidMap) {
+	            uidMap[_uid] = currentUidMap[_uid];
 	          }
-	
-	          if (!initialized) {
-	            initialized = true;
-	
-	            for (var _uid2 in currentUidMap) {
-	              uidMap[_uid2] = currentUidMap[_uid2];
-	            }
-	          } else {
-	            for (var _uid3 in uidMap) {
-	              if (!currentUidMap[_uid3]) {
-	                delete uidMap[_uid3];
-	              }
+	        } else {
+	          for (var _uid2 in uidMap) {
+	            if (!currentUidMap[_uid2]) {
+	              delete uidMap[_uid2];
 	            }
 	          }
 	        }
-	      } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	      } finally {
-	        try {
-	          if (!_iteratorNormalCompletion && _iterator.return) {
-	            _iterator.return();
-	          }
-	        } finally {
-	          if (_didIteratorError) {
-	            throw _iteratorError;
-	          }
-	        }
-	      }
+	      });
 	
 	      var uids = [];
 	
@@ -720,8 +680,8 @@
 	        throw new TypeError("Value of variable \"uids\" violates contract.\n\nExpected:\nArray<any>\n\nGot:\n" + _inspect(uids));
 	      }
 	
-	      for (var _uid in uidMap) {
-	        uids.push(uidMap[_uid]);
+	      for (var _uid3 in uidMap) {
+	        uids.push(uidMap[_uid3]);
 	      }
 	
 	      return _ref2(uids);
@@ -733,7 +693,16 @@
 	
 	exports.default = SearchIndex;
 	
-	function _inspect(input) {
+	function _inspect(input, depth) {
+	  var maxDepth = 4;
+	  var maxKeys = 15;
+
+	  if (depth === undefined) {
+	    depth = 0;
+	  }
+
+	  depth += 1;
+
 	  if (input === null) {
 	    return 'null';
 	  } else if (input === undefined) {
@@ -742,15 +711,29 @@
 	    return typeof input === "undefined" ? "undefined" : _typeof(input);
 	  } else if (Array.isArray(input)) {
 	    if (input.length > 0) {
-	      var first = _inspect(input[0]);
+	      var _ret = function () {
+	        if (depth > maxDepth) return {
+	            v: '[...]'
+	          };
 
-	      if (input.every(function (item) {
-	        return _inspect(item) === first;
-	      })) {
-	        return first.trim() + '[]';
-	      } else {
-	        return '[' + input.map(_inspect).join(', ') + ']';
-	      }
+	        var first = _inspect(input[0], depth);
+
+	        if (input.every(function (item) {
+	          return _inspect(item, depth) === first;
+	        })) {
+	          return {
+	            v: first.trim() + '[]'
+	          };
+	        } else {
+	          return {
+	            v: '[' + input.slice(0, maxKeys).map(function (item) {
+	              return _inspect(item, depth);
+	            }).join(', ') + (input.length >= maxKeys ? ', ...' : '') + ']'
+	          };
+	        }
+	      }();
+
+	      if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
 	    } else {
 	      return 'Array';
 	    }
@@ -765,18 +748,24 @@
 	      }
 	    }
 
-	    var entries = keys.map(function (key) {
-	      return (/^([A-Z_$][A-Z0-9_$]*)$/i.test(key) ? key : JSON.stringify(key)) + ': ' + _inspect(input[key]) + ';';
-	    }).join('\n  ');
+	    if (depth > maxDepth) return '{...}';
+	    var indent = '  '.repeat(depth - 1);
+	    var entries = keys.slice(0, maxKeys).map(function (key) {
+	      return (/^([A-Z_$][A-Z0-9_$]*)$/i.test(key) ? key : JSON.stringify(key)) + ': ' + _inspect(input[key], depth) + ';';
+	    }).join('\n  ' + indent);
+
+	    if (keys.length >= maxKeys) {
+	      entries += '\n  ' + indent + '...';
+	    }
 
 	    if (input.constructor && input.constructor.name && input.constructor.name !== 'Object') {
-	      return input.constructor.name + ' {\n  ' + entries + '\n}';
+	      return input.constructor.name + ' {\n  ' + indent + entries + '\n' + indent + '}';
 	    } else {
-	      return '{ ' + entries + '\n}';
+	      return '{\n  ' + indent + entries + '\n' + indent + '}';
 	    }
 	  }
 	}
 
 /***/ }
 /******/ ]);
-//# sourceMappingURL=a6e8d10e25215827e7c5.worker.js.map
+//# sourceMappingURL=56fff296395f2f8043e8.worker.js.map

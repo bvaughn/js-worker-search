@@ -1,6 +1,9 @@
 Changelog
 -----
 
+#### 1.1.1
+* 🐛 Replaced `for..of` with `forEach` in order to support IE 11. ([@jrubins](https://github.com/jrubins) - [#6](https://github.com/bvaughn/js-worker-search/pull/6))
+
 #### 1.1.0
 Added support for custom index strategies.
 By default, a prefix matching strategy is still used but it can be overridden like so:
