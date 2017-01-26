@@ -35,7 +35,7 @@ export default class SearchIndex {
     let uidMap: {[uid: any]: any} = {}
     let initialized = false
 
-    for (let token of tokens) {
+    tokens.forEach(token => {
       let currentUidMap: {[uid: any]: any} = this.tokenToUidMap[token] || {}
 
       if (!initialized) {
@@ -51,7 +51,7 @@ export default class SearchIndex {
           }
         }
       }
-    }
+    })
 
     let uids: Array<any> = []
 
