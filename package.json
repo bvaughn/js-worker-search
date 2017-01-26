@@ -12,10 +12,8 @@
   "scripts": {
     "build": "npm run clean && NODE_ENV=production webpack --config webpack.config.dist.js --bail",
     "clean": "rimraf dist",
-    "deploy": "gh-pages -d build",
     "lint": "standard",
     "prebuild": "npm run lint",
-    "postpublish": "npm run deploy",
     "prepublish": "npm run build",
     "start": "watch 'clear && npm run lint -s && npm run test -s' src",
     "test": "babel-node node_modules/.bin/tape 'src/**/*.test.js' | tspec"
