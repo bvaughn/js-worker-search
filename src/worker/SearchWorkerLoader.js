@@ -16,7 +16,7 @@ export default class SearchWorkerLoader {
     // Defer worker import until construction to avoid testing error:
     // Error: Cannot find module 'worker!./[workername]'
     if (!WorkerClass) {
-      WorkerClass = require('worker?inline=true!./Worker')
+      WorkerClass = require('worker-loader?inline=true!./Worker')
     }
 
     // Maintain context if references are passed around

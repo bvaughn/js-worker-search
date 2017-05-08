@@ -57,8 +57,8 @@
     "tap-spec": "^4.1.1",
     "tape": "^4.4.0",
     "watch": "^0.17.1",
-    "webpack": "^1.12.9",
-    "worker-loader": "^0.7.0"
+    "webpack": "^2.5.1",
+    "worker-loader": "^0.8.0"
   },
   "dependencies": {
     "uuid": "^2.0.1"
