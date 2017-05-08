@@ -6,7 +6,7 @@ module.exports = {
     './src/index.js'
   ],
   output: {
-    path: 'dist',
+    path: path.join(__dirname, 'dist'),
     filename: 'js-worker-search.js',
     libraryTarget: 'commonjs2',
     library: 'redux-search'
@@ -14,10 +14,10 @@ module.exports = {
   plugins: [
   ],
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
-        loader: 'babel',
+        use: ['babel-loader'],
         include: path.join(__dirname, 'src')
       }
     ]
