@@ -61,6 +61,7 @@
     "worker-loader": "^0.8.1"
   },
   "dependencies": {
+    "prettier": "^1.5.3",
     "uuid": "^2.0.1"
   }
 }
