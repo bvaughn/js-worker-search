@@ -10,12 +10,14 @@
   },
   "homepage": "https://github.com/bvaughn/js-worker-search#readme",
   "scripts": {
-    "build": "npm run clean && NODE_ENV=production webpack --config webpack.config.dist.js --bail",
+    "build": "yarn run clean && NODE_ENV=production webpack --config webpack.config.dist.js --bail",
     "clean": "rimraf dist",
     "lint": "standard",
-    "prebuild": "npm run lint",
-    "prepublish": "npm run build",
-    "start": "watch 'clear && npm run lint -s && npm run test -s' src",
+    "prebuild": "yarn run lint",
+    "prepublish": "yarn run build",
+    "pretest": "yarn run prettier",
+    "prettier": "prettier --single-quote --trailing-comma es5 --write 'src/**/*.js'",
+    "start": "watch 'clear && yarn run lint -s && yarn run test -s' src",
     "test": "babel-node node_modules/.bin/tape 'src/**/*.test.js' | tspec"
   },
   "keywords": [
