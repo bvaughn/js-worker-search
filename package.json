@@ -52,6 +52,7 @@
     "babel-preset-stage-0": "^6.3.13",
     "babylon": "^6.17.4",
     "immutable": "^3.7.6",
+    "prettier": "^1.5.3",
     "rimraf": "^2.5.0",
     "standard": "^10.0.2",
     "tap-spec": "^4.1.1",
@@ -61,7 +62,6 @@
     "worker-loader": "^0.8.1"
   },
   "dependencies": {
-    "prettier": "^1.5.3",
     "uuid": "^2.0.1"
   }
 }
