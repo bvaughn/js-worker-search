@@ -1,5 +1,5 @@
-import SearchUtility from './util';
-import SearchWorkerLoader from './worker';
+import SearchUtility from "./util";
+import SearchWorkerLoader from "./worker";
 
 /**
  * Search API that uses web workers when available.
@@ -9,7 +9,7 @@ export default class SearchApi {
   constructor({ indexMode } = {}) {
     // Based on https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
     // But with added check for Node environment
-    if (typeof window !== 'undefined' && window.Worker) {
+    if (typeof window !== "undefined" && window.Worker) {
       this._search = new SearchWorkerLoader({ indexMode });
     } else {
       this._search = new SearchUtility({ indexMode });

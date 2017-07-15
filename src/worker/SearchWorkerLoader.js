@@ -1,4 +1,4 @@
-import uuid from 'uuid';
+import uuid from "uuid";
 
 /**
  * Client side, full text search utility.
@@ -13,7 +13,7 @@ export default class SearchWorkerLoader {
     // Error: Cannot find module 'worker!./[workername]'
     if (!WorkerClass) {
       // eslint-disable-next-line
-      WorkerClass = require('worker?inline=true!./Worker');
+      WorkerClass = require("worker?inline=true!./Worker");
     }
 
     // Maintain context if references are passed around
@@ -36,8 +36,8 @@ export default class SearchWorkerLoader {
     // Override default :indexMode if a specific one has been requested
     if (indexMode) {
       this.worker.postMessage({
-        method: 'setIndexMode',
-        indexMode,
+        method: "setIndexMode",
+        indexMode
       });
     }
   }
@@ -51,9 +51,9 @@ export default class SearchWorkerLoader {
    */
   indexDocument(uid: any, text: string): SearchWorkerLoader {
     this.worker.postMessage({
-      method: 'indexDocument',
+      method: "indexDocument",
       text,
-      uid,
+      uid
     });
 
     return this;
@@ -76,9 +76,9 @@ export default class SearchWorkerLoader {
       const data = { callbackId, reject, resolve };
 
       this.worker.postMessage({
-        method: 'search',
+        method: "search",
         query,
-        callbackId,
+        callbackId
       });
 
       this.callbackQueue.push(data);

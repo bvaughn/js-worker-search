@@ -1,5 +1,5 @@
-import { INDEX_MODES } from './constants';
-import SearchIndex from './SearchIndex';
+import { INDEX_MODES } from "./constants";
+import SearchIndex from "./SearchIndex";
 
 /**
  * Synchronous client-side full-text search utility.
@@ -76,7 +76,7 @@ export default class SearchUtility {
   setIndexMode(indexMode: string): void {
     if (Object.keys(this.uids).length > 0) {
       throw Error(
-        'indexMode cannot be changed once documents have been indexed'
+        "indexMode cannot be changed once documents have been indexed"
       );
     }
 
@@ -111,7 +111,7 @@ export default class SearchUtility {
     // https://mathiasbynens.be/notes/javascript-unicode
     try {
       for (let i = 0, length = token.length; i < length; ++i) {
-        let substring: string = '';
+        let substring: string = "";
 
         for (let j = i; j < length; ++j) {
           substring += token.charAt(j);

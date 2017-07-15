@@ -1,1 +1,3 @@
-export default from './SearchWorkerLoader';
+import SearchWorkerLoader from "./SearchWorkerLoader";
+
+export default SearchWorkerLoader;

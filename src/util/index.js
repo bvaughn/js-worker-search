@@ -1,2 +1,4 @@
-export default from './SearchUtility';
-export { INDEX_MODES } from './constants';
+import SearchUtility from "./SearchUtility";
+import { INDEX_MODES } from "./constants";
+
+export { INDEX_MODES, SearchUtility };

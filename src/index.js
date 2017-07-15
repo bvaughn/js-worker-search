@@ -1,2 +1,4 @@
-export default from './SearchApi';
-export { INDEX_MODES } from './util';
+import SearchApi from "./SearchApi";
+import { INDEX_MODES } from "./util";
+
+export { INDEX_MODES, SearchUtility };
