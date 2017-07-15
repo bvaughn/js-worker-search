@@ -6,7 +6,6 @@ import SearchIndex from './SearchIndex'
  * Forked from JS search (github.com/bvaughn/js-search).
  */
 export default class SearchUtility {
-
   /**
    * Constructor.
    *

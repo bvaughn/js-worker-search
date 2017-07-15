@@ -138,7 +138,7 @@ test('SearchUtility should should error if :setIndexMode() is called after an in
   let errored = false
   const searchUtility = init()
   try {
-    searchUtility.indexDocument
+    searchUtility.indexDocument({})
     searchUtility.setIndexMode(INDEX_MODES.EXACT_WORDS)
   } catch (error) {
     errored = true

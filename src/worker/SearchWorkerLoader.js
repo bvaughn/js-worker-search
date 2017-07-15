@@ -5,7 +5,6 @@ import uuid from 'uuid'
  * This interface exposes web worker search capabilities to the UI thread.
  */
 export default class SearchWorkerLoader {
-
   /**
    * Constructor.
    */
@@ -16,6 +15,7 @@ export default class SearchWorkerLoader {
     // Defer worker import until construction to avoid testing error:
     // Error: Cannot find module 'worker!./[workername]'
     if (!WorkerClass) {
+      // eslint-disable-next-line
       WorkerClass = require('worker?inline=true!./Worker')
     }
 
