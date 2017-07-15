@@ -1,1 +1,1 @@
-export default from './SearchWorkerLoader'
+export default from './SearchWorkerLoader';

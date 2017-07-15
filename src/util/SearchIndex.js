@@ -4,10 +4,10 @@
  * Forked from JS search (github.com/bvaughn/js-search).
  */
 export default class SearchIndex {
-  tokenToUidMap: { [token: string]: any }
+  tokenToUidMap: { [token: string]: any };
 
-  constructor () {
-    this.tokenToUidMap = {}
+  constructor() {
+    this.tokenToUidMap = {};
   }
 
   /**
@@ -16,12 +16,12 @@ export default class SearchIndex {
    * @param token Searchable token (e.g. "road")
    * @param uid Identifies a document within the searchable corpus
    */
-  indexDocument (token: string, uid: any): void {
+  indexDocument(token: string, uid: any): void {
     if (!this.tokenToUidMap[token]) {
-      this.tokenToUidMap[token] = {}
+      this.tokenToUidMap[token] = {};
     }
 
-    this.tokenToUidMap[token][uid] = uid
+    this.tokenToUidMap[token][uid] = uid;
   }
 
   /**
@@ -31,34 +31,34 @@ export default class SearchIndex {
    * @param tokens Array of searchable tokens (e.g. ["long", "road"])
    * @return Array of uids that have been associated with the set of search tokens
    */
-  search (tokens: Array<string>): Array<any> {
-    let uidMap: {[uid: any]: any} = {}
-    let initialized = false
+  search(tokens: Array<string>): Array<any> {
+    let uidMap: { [uid: any]: any } = {};
+    let initialized = false;
 
     tokens.forEach(token => {
-      let currentUidMap: {[uid: any]: any} = this.tokenToUidMap[token] || {}
+      let currentUidMap: { [uid: any]: any } = this.tokenToUidMap[token] || {};
 
       if (!initialized) {
-        initialized = true
+        initialized = true;
 
         for (let uid in currentUidMap) {
-          uidMap[uid] = currentUidMap[uid]
+          uidMap[uid] = currentUidMap[uid];
         }
       } else {
         for (let uid in uidMap) {
           if (!currentUidMap[uid]) {
-            delete uidMap[uid]
+            delete uidMap[uid];
           }
         }
       }
-    })
+    });
 
-    let uids: Array<any> = []
+    let uids: Array<any> = [];
 
     for (let uid in uidMap) {
-      uids.push(uidMap[uid])
+      uids.push(uidMap[uid]);
     }
 
-    return uids
+    return uids;
   }
 }

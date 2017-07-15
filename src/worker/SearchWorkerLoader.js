@@ -1,4 +1,4 @@
-import uuid from 'uuid'
+import uuid from 'uuid';
 
 /**
  * Client side, full text search utility.
@@ -8,40 +8,37 @@ export default class SearchWorkerLoader {
   /**
    * Constructor.
    */
-  constructor ({
-    indexMode,
-    WorkerClass
-  } = {}) {
+  constructor({ indexMode, WorkerClass } = {}) {
     // Defer worker import until construction to avoid testing error:
     // Error: Cannot find module 'worker!./[workername]'
     if (!WorkerClass) {
       // eslint-disable-next-line
-      WorkerClass = require('worker?inline=true!./Worker')
+      WorkerClass = require('worker?inline=true!./Worker');
     }
 
     // Maintain context if references are passed around
-    this.indexDocument = this.indexDocument.bind(this)
-    this.search = this.search.bind(this)
+    this.indexDocument = this.indexDocument.bind(this);
+    this.search = this.search.bind(this);
 
-    this.callbackQueue = []
-    this.callbackIdMap = {}
+    this.callbackQueue = [];
+    this.callbackIdMap = {};
 
-    this.worker = new WorkerClass()
+    this.worker = new WorkerClass();
     this.worker.onerror = event => {
-      const { callbackId, error } = event.data
-      this._updateQueue({ callbackId, error })
-    }
+      const { callbackId, error } = event.data;
+      this._updateQueue({ callbackId, error });
+    };
     this.worker.onmessage = event => {
-      const { callbackId, results } = event.data
-      this._updateQueue({ callbackId, results })
-    }
+      const { callbackId, results } = event.data;
+      this._updateQueue({ callbackId, results });
+    };
 
     // Override default :indexMode if a specific one has been requested
     if (indexMode) {
       this.worker.postMessage({
         method: 'setIndexMode',
-        indexMode
-      })
+        indexMode,
+      });
     }
   }
 
@@ -52,14 +49,14 @@ export default class SearchWorkerLoader {
    * @param uid Uniquely identifies a searchable object
    * @param text Text to associate with uid
    */
-  indexDocument (uid: any, text: string): SearchWorkerLoader {
+  indexDocument(uid: any, text: string): SearchWorkerLoader {
     this.worker.postMessage({
       method: 'indexDocument',
       text,
-      uid
-    })
+      uid,
+    });
 
-    return this
+    return this;
   }
 
   /**
@@ -73,46 +70,46 @@ export default class SearchWorkerLoader {
    * @param query Searchable query text
    * @return Promise to be resolved with an array of uids
    */
-  search (query: string): Promise {
+  search(query: string): Promise {
     return new Promise((resolve, reject) => {
-      const callbackId = uuid.v4()
-      const data = { callbackId, reject, resolve }
+      const callbackId = uuid.v4();
+      const data = { callbackId, reject, resolve };
 
       this.worker.postMessage({
         method: 'search',
         query,
-        callbackId
-      })
+        callbackId,
+      });
 
-      this.callbackQueue.push(data)
-      this.callbackIdMap[callbackId] = data
-    })
+      this.callbackQueue.push(data);
+      this.callbackIdMap[callbackId] = data;
+    });
   }
 
   /**
    * Updates the queue and flushes any completed promises that are ready.
    */
-  _updateQueue ({ callbackId, error, results }) {
-    const target = this.callbackIdMap[callbackId]
-    target.complete = true
-    target.error = error
-    target.results = results
+  _updateQueue({ callbackId, error, results }) {
+    const target = this.callbackIdMap[callbackId];
+    target.complete = true;
+    target.error = error;
+    target.results = results;
 
     while (this.callbackQueue.length) {
-      let data = this.callbackQueue[0]
+      let data = this.callbackQueue[0];
 
       if (!data.complete) {
-        break
+        break;
       }
 
-      this.callbackQueue.shift()
+      this.callbackQueue.shift();
 
-      delete this.callbackIdMap[data.callbackId]
+      delete this.callbackIdMap[data.callbackId];
 
       if (data.error) {
-        data.reject(data.error)
+        data.reject(data.error);
       } else {
-        data.resolve(data.results)
+        data.resolve(data.results);
       }
     }
   }

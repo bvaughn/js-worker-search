@@ -1,5 +1,5 @@
-import { INDEX_MODES } from './constants'
-import SearchIndex from './SearchIndex'
+import { INDEX_MODES } from './constants';
+import SearchIndex from './SearchIndex';
 
 /**
  * Synchronous client-side full-text search utility.
@@ -11,20 +11,18 @@ export default class SearchUtility {
    *
    * @param indexMode See #setIndexMode
    */
-  constructor ({
-    indexMode = INDEX_MODES.ALL_SUBSTRINGS
-  } = {}) {
-    this._indexMode = indexMode
+  constructor({ indexMode = INDEX_MODES.ALL_SUBSTRINGS } = {}) {
+    this._indexMode = indexMode;
 
-    this.searchIndex = new SearchIndex()
-    this.uids = {}
+    this.searchIndex = new SearchIndex();
+    this.uids = {};
   }
 
   /**
    * Returns a constant representing the current index mode.
    */
-  getIndexMode (): string {
-    return this._indexMode
+  getIndexMode(): string {
+    return this._indexMode;
   }
 
   /**
@@ -34,20 +32,20 @@ export default class SearchUtility {
    * @param uid Uniquely identifies a searchable object
    * @param text Text to associate with uid
    */
-  indexDocument (uid: any, text: string): SearchUtility {
-    this.uids[uid] = true
+  indexDocument(uid: any, text: string): SearchUtility {
+    this.uids[uid] = true;
 
-    var fieldTokens: Array<string> = this._tokenize(this._sanitize(text))
+    var fieldTokens: Array<string> = this._tokenize(this._sanitize(text));
 
     fieldTokens.forEach(fieldToken => {
-      var expandedTokens: Array<string> = this._expandToken(fieldToken)
+      var expandedTokens: Array<string> = this._expandToken(fieldToken);
 
       expandedTokens.forEach(expandedToken => {
-        this.searchIndex.indexDocument(expandedToken, uid)
-      })
-    })
+        this.searchIndex.indexDocument(expandedToken, uid);
+      });
+    });
 
-    return this
+    return this;
   }
 
   /**
@@ -61,13 +59,13 @@ export default class SearchUtility {
    * @param query Searchable query text
    * @return Array of uids
    */
-  search (query: string): Array<any> {
+  search(query: string): Array<any> {
     if (!query) {
-      return Object.keys(this.uids)
+      return Object.keys(this.uids);
     } else {
-      var tokens: Array<string> = this._tokenize(this._sanitize(query))
+      var tokens: Array<string> = this._tokenize(this._sanitize(query));
 
-      return this.searchIndex.search(tokens)
+      return this.searchIndex.search(tokens);
     }
   }
 
@@ -75,12 +73,14 @@ export default class SearchUtility {
    * Sets a new index mode.
    * See util/constants/INDEX_MODES
    */
-  setIndexMode (indexMode: string): void {
+  setIndexMode(indexMode: string): void {
     if (Object.keys(this.uids).length > 0) {
-      throw Error('indexMode cannot be changed once documents have been indexed')
+      throw Error(
+        'indexMode cannot be changed once documents have been indexed'
+      );
     }
 
-    this._indexMode = indexMode
+    this._indexMode = indexMode;
   }
 
   /**
@@ -88,20 +88,20 @@ export default class SearchUtility {
    *
    * @private
    */
-  _expandToken (token: string): Array<string> {
+  _expandToken(token: string): Array<string> {
     switch (this._indexMode) {
       case INDEX_MODES.EXACT_WORDS:
-        return [token]
+        return [token];
       case INDEX_MODES.PREFIXES:
-        return this._expandPrefixTokens(token)
+        return this._expandPrefixTokens(token);
       case INDEX_MODES.ALL_SUBSTRINGS:
       default:
-        return this._expandAllSubstringTokens(token)
+        return this._expandAllSubstringTokens(token);
     }
   }
 
-  _expandAllSubstringTokens (token: string): Array<string> {
-    const expandedTokens = []
+  _expandAllSubstringTokens(token: string): Array<string> {
+    const expandedTokens = [];
 
     // String.prototype.charAt() may return surrogate halves instead of whole characters.
     // When this happens in the context of a web-worker it can cause Chrome to crash.
@@ -111,22 +111,22 @@ export default class SearchUtility {
     // https://mathiasbynens.be/notes/javascript-unicode
     try {
       for (let i = 0, length = token.length; i < length; ++i) {
-        let substring: string = ''
+        let substring: string = '';
 
         for (let j = i; j < length; ++j) {
-          substring += token.charAt(j)
-          expandedTokens.push(substring)
+          substring += token.charAt(j);
+          expandedTokens.push(substring);
         }
       }
     } catch (error) {
-      console.error(`Unable to parse token "${token}" ${error}`)
+      console.error(`Unable to parse token "${token}" ${error}`);
     }
 
-    return expandedTokens
+    return expandedTokens;
   }
 
-  _expandPrefixTokens (token: string): Array<string> {
-    const expandedTokens = []
+  _expandPrefixTokens(token: string): Array<string> {
+    const expandedTokens = [];
 
     // String.prototype.charAt() may return surrogate halves instead of whole characters.
     // When this happens in the context of a web-worker it can cause Chrome to crash.
@@ -136,28 +136,26 @@ export default class SearchUtility {
     // https://mathiasbynens.be/notes/javascript-unicode
     try {
       for (let i = 0, length = token.length; i < length; ++i) {
-        expandedTokens.push(token.substr(0, i + 1))
+        expandedTokens.push(token.substr(0, i + 1));
       }
     } catch (error) {
-      console.error(`Unable to parse token "${token}" ${error}`)
+      console.error(`Unable to parse token "${token}" ${error}`);
     }
 
-    return expandedTokens
+    return expandedTokens;
   }
 
   /**
    * @private
    */
-  _sanitize (string: string): string {
-    return string.trim().toLocaleLowerCase()
+  _sanitize(string: string): string {
+    return string.trim().toLocaleLowerCase();
   }
 
   /**
    * @private
    */
-  _tokenize (text: string): Array<string> {
-    return text
-      .split(/\s+/)
-      .filter(text => text) // Remove empty tokens
+  _tokenize(text: string): Array<string> {
+    return text.split(/\s+/).filter(text => text); // Remove empty tokens
   }
 }

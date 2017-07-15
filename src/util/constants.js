@@ -12,5 +12,5 @@ export const INDEX_MODES = {
   // Indexes for prefix searches (e.g. the term "cat" is indexed as "c", "ca", and "cat" allowing prefix search lookups).
   // Based on 'prefix-index-strategy' from js-search;
   // github.com/bvaughn/js-search/blob/master/source/index-strategy/prefix-index-strategy.ts
-  PREFIXES: 'PREFIXES'
-}
+  PREFIXES: 'PREFIXES',
+};
