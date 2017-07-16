@@ -1,4 +1,6 @@
-import SearchUtility from "../util";
+/** @flow */
+
+import { SearchUtility } from "../util";
 
 /**
  * Search entry point to web worker.

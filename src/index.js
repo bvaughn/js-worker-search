@@ -1,5 +1,6 @@
+/** @flow */
+
 import SearchApi from "./SearchApi";
 import { INDEX_MODES } from "./util";
 
-export { INDEX_MODES, SearchApi };
-export default SearchApi;
+export { SearchApi as default, INDEX_MODES };

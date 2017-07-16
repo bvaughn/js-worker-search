@@ -1,11 +1,26 @@
+/** @flow */
+
 import { INDEX_MODES } from "./constants";
 import SearchIndex from "./SearchIndex";
+
+import type { IndexMode } from "./constants";
+import type { SearchApiIndex } from "../types";
+
+type UidMap = {
+  [uid: string]: boolean
+};
 
 /**
  * Synchronous client-side full-text search utility.
  * Forked from JS search (github.com/bvaughn/js-search).
  */
-export default class SearchUtility {
+export default class SearchUtility implements SearchApiIndex {
+  _indexMode: IndexMode;
+  _tokenizePattern: RegExp;
+  _caseSensitive: boolean;
+  _searchIndex: SearchIndex;
+  _uids: UidMap;
+
   /**
    * Constructor.
    *
@@ -18,14 +33,18 @@ export default class SearchUtility {
       indexMode = INDEX_MODES.ALL_SUBSTRINGS,
       tokenizePattern = /\s+/,
       caseSensitive = false
+    }: {
+      indexMode?: IndexMode,
+      tokenizePattern?: RegExp,
+      caseSensitive?: boolean
     } = {}
   ) {
     this._indexMode = indexMode;
     this._tokenizePattern = tokenizePattern;
     this._caseSensitive = caseSensitive;
 
-    this.searchIndex = new SearchIndex();
-    this.uids = {};
+    this._searchIndex = new SearchIndex();
+    this._uids = {};
   }
 
   /**
@@ -56,8 +75,8 @@ export default class SearchUtility {
    * @param uid Uniquely identifies a searchable object
    * @param text Text to associate with uid
    */
-  indexDocument(uid: any, text: string): SearchUtility {
-    this.uids[uid] = true;
+  indexDocument = (uid: any, text: string): SearchApiIndex => {
+    this._uids[uid] = true;
 
     var fieldTokens: Array<string> = this._tokenize(this._sanitize(text));
 
@@ -65,12 +84,12 @@ export default class SearchUtility {
       var expandedTokens: Array<string> = this._expandToken(fieldToken);
 
       expandedTokens.forEach(expandedToken => {
-        this.searchIndex.indexDocument(expandedToken, uid);
+        this._searchIndex.indexDocument(expandedToken, uid);
       });
     });
 
     return this;
-  }
+  };
 
   /**
    * Searches the current index for the specified query text.
@@ -83,22 +102,22 @@ export default class SearchUtility {
    * @param query Searchable query text
    * @return Array of uids
    */
-  search(query: string): Array<any> {
+  search = (query: string): Promise<Array<any>> => {
     if (!query) {
-      return Object.keys(this.uids);
+      return Promise.resolve(Object.keys(this._uids));
     } else {
       var tokens: Array<string> = this._tokenize(this._sanitize(query));
 
-      return this.searchIndex.search(tokens);
+      return Promise.resolve(this._searchIndex.search(tokens));
     }
-  }
+  };
 
   /**
    * Sets a new index mode.
    * See util/constants/INDEX_MODES
    */
-  setIndexMode(indexMode: string): void {
-    if (Object.keys(this.uids).length > 0) {
+  setIndexMode(indexMode: IndexMode): void {
+    if (Object.keys(this._uids).length > 0) {
       throw Error(
         "indexMode cannot be changed once documents have been indexed"
       );

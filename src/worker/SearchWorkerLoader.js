@@ -1,41 +1,74 @@
+/** @flow */
+
 import uuid from "uuid";
+
+import type { IndexMode } from "../util";
+import type { SearchApiIndex } from "../types";
+
+type Results = Array<any>;
+type RejectFn = (error: Error) => void;
+type ResolveFn = (results: Results) => void;
+export type CallbackData = {
+  callbackId: string,
+  complete: boolean,
+  error: ?Error,
+  reject: RejectFn,
+  resolve: ResolveFn,
+  results: ?Results
+};
+type CallbackIdMap = { [callbackId: string]: CallbackData };
+type CallbackQueue = Array<CallbackData>;
+
+type Worker = any; // TODO
 
 /**
  * Client side, full text search utility.
  * This interface exposes web worker search capabilities to the UI thread.
  */
-export default class SearchWorkerLoader {
+export default class SearchWorkerLoader implements SearchApiIndex {
+  _callbackIdMap: CallbackIdMap;
+  _callbackQueue: CallbackQueue;
+  _worker: Worker;
+
   /**
    * Constructor.
    */
-  constructor({ indexMode, tokenizePattern, caseSensitive, WorkerClass } = {}) {
+  constructor(
+    {
+      indexMode,
+      tokenizePattern,
+      caseSensitive,
+      WorkerClass
+    }: {
+      indexMode?: IndexMode,
+      tokenizePattern?: RegExp,
+      caseSensitive?: boolean,
+      WorkerClass?: Class<Worker>
+    } = {}
+  ) {
     // Defer worker import until construction to avoid testing error:
     // Error: Cannot find module 'worker!./[workername]'
     if (!WorkerClass) {
-      // eslint-disable-next-line
+      // $FlowFixMe eslint-disable-next-line
       WorkerClass = require("worker?inline=true!./Worker");
     }
 
-    // Maintain context if references are passed around
-    this.indexDocument = this.indexDocument.bind(this);
-    this.search = this.search.bind(this);
+    this._callbackQueue = [];
+    this._callbackIdMap = {};
 
-    this.callbackQueue = [];
-    this.callbackIdMap = {};
-
-    this.worker = new WorkerClass();
-    this.worker.onerror = event => {
+    this._worker = new WorkerClass();
+    this._worker.onerror = event => {
       const { callbackId, error } = event.data;
       this._updateQueue({ callbackId, error });
     };
-    this.worker.onmessage = event => {
+    this._worker.onmessage = event => {
       const { callbackId, results } = event.data;
       this._updateQueue({ callbackId, results });
     };
 
     // Override default :indexMode if a specific one has been requested
     if (indexMode) {
-      this.worker.postMessage({
+      this._worker.postMessage({
         method: "setIndexMode",
         indexMode
       });
@@ -43,7 +76,7 @@ export default class SearchWorkerLoader {
 
     // Override default :tokenizePattern if a specific one has been requested
     if (tokenizePattern) {
-      this.worker.postMessage({
+      this._worker.postMessage({
         method: "setTokenizePattern",
         tokenizePattern
       });
@@ -51,7 +84,7 @@ export default class SearchWorkerLoader {
 
     // Override default :caseSensitive bit if a specific one has been requested
     if (caseSensitive) {
-      this.worker.postMessage({
+      this._worker.postMessage({
         method: "setCaseSensitive",
         caseSensitive
       });
@@ -65,15 +98,15 @@ export default class SearchWorkerLoader {
    * @param uid Uniquely identifies a searchable object
    * @param text Text to associate with uid
    */
-  indexDocument(uid: any, text: string): SearchWorkerLoader {
-    this.worker.postMessage({
+  indexDocument = (uid: any, text: string): SearchApiIndex => {
+    this._worker.postMessage({
       method: "indexDocument",
       text,
       uid
     });
 
     return this;
-  }
+  };
 
   /**
    * Searches the current index for the specified query text.
@@ -86,46 +119,63 @@ export default class SearchWorkerLoader {
    * @param query Searchable query text
    * @return Promise to be resolved with an array of uids
    */
-  search(query: string): Promise {
-    return new Promise((resolve, reject) => {
+  search = (query: string): Promise<Array<any>> => {
+    return new Promise((resolve: ResolveFn, reject: RejectFn) => {
       const callbackId = uuid.v4();
-      const data = { callbackId, reject, resolve };
+      const data = {
+        callbackId,
+        complete: false,
+        error: null,
+        reject,
+        resolve,
+        results: null
+      };
 
-      this.worker.postMessage({
+      this._worker.postMessage({
         method: "search",
         query,
         callbackId
       });
 
-      this.callbackQueue.push(data);
-      this.callbackIdMap[callbackId] = data;
+      this._callbackQueue.push(data);
+      this._callbackIdMap[callbackId] = data;
     });
-  }
+  };
 
   /**
    * Updates the queue and flushes any completed promises that are ready.
    */
-  _updateQueue({ callbackId, error, results }) {
-    const target = this.callbackIdMap[callbackId];
+  _updateQueue({
+    callbackId,
+    error,
+    results
+  }: {
+    callbackId: string,
+    error?: Error,
+    results?: Results
+  }) {
+    const target = this._callbackIdMap[callbackId];
     target.complete = true;
     target.error = error;
     target.results = results;
 
-    while (this.callbackQueue.length) {
-      let data = this.callbackQueue[0];
+    while (this._callbackQueue.length) {
+      let data = this._callbackQueue[0];
 
       if (!data.complete) {
         break;
       }
 
-      this.callbackQueue.shift();
+      this._callbackQueue.shift();
 
-      delete this.callbackIdMap[data.callbackId];
+      delete this._callbackIdMap[data.callbackId];
 
       if (data.error) {
         data.reject(data.error);
       } else {
-        data.resolve(data.results);
+        // This type will always be defined in this case;
+        // This casting lets Flow know it's safe.
+        data.resolve((data.results: any));
       }
     }
   }
