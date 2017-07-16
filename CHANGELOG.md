@@ -2,15 +2,16 @@ Changelog
 -----
 
 #### 1.1.3
-Added support for custom tokenizers and sanitizers to be specified in the constructor.
+Added support for custom tokenizer patterns and case-sensitive search.
 
 ```js
-// prefix matching with custom tokenizer to include all non alphanumerics as delimeters
-// and custom sanitizer for case-sensitive searches
+// Case-sensitive exact word search with custom tokenizer RegExp
+// to include all non alphanumerics as delimeters
+// ex: searching "Swift" will match "Thomas Swift" and "Thomas (Swift)" but not "the swift dog"
 const searchApi = new SearchApi({
-    indexMode: INDEX_MODES.PREFIXES,
-    tokenize: text => text.split(/[^a-z0-9]+/).filter(text => text),
-    sanitize: text => text.trim()
+    indexMode: INDEX_MODES.EXACT_WORDS,
+    tokenizePattern: /[^a-z0-9]+/,
+    caseSensitive: true
 })
 ```
 

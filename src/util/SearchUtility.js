@@ -10,19 +10,19 @@ export default class SearchUtility {
    * Constructor.
    *
    * @param indexMode See #setIndexMode
-   * @param tokenize A function that splits a string into an array of tokens to be searched
-   * @param sanitize A function that transforms a string before it is searched
+   * @param tokenizePattern See #setTokenizePattern
+   * @param caseSensitive See #setCaseSensitive
    */
   constructor(
     {
       indexMode = INDEX_MODES.ALL_SUBSTRINGS,
-      tokenize = this._defaultTokenize,
-      sanitize = this._defaultSanitize
+      tokenizePattern = /\s+/,
+      caseSensitive = false
     } = {}
   ) {
     this._indexMode = indexMode;
-    this._tokenize = tokenize;
-    this._sanitize = sanitize;
+    this._tokenizePattern = tokenizePattern;
+    this._caseSensitive = caseSensitive;
 
     this.searchIndex = new SearchIndex();
     this.uids = {};
@@ -33,6 +33,20 @@ export default class SearchUtility {
    */
   getIndexMode(): string {
     return this._indexMode;
+  }
+
+  /**
+   * Returns a constant representing the current tokenize pattern.
+   */
+  getTokenizePattern(): RegExp {
+    return this._tokenizePattern;
+  }
+
+  /**
+   * Returns a constant representing the current case-sensitive bit.
+   */
+  getCaseSensitive(): boolean {
+    return this._caseSensitive;
   }
 
   /**
@@ -91,6 +105,20 @@ export default class SearchUtility {
     }
 
     this._indexMode = indexMode;
+  }
+
+  /**
+   * Sets a new tokenize pattern (regular expression)
+   */
+  setTokenizePattern(pattern: RegExp): void {
+    this._tokenizePattern = pattern;
+  }
+
+  /**
+   * Sets a new case-sensitive bit
+   */
+  setCaseSensitive(caseSensitive: boolean): void {
+    this._caseSensitive = caseSensitive;
   }
 
   /**
@@ -158,14 +186,16 @@ export default class SearchUtility {
   /**
    * @private
    */
-  _defaultSanitize(string: string): string {
-    return string.trim().toLocaleLowerCase();
+  _sanitize(string: string): string {
+    return this._caseSensitive
+      ? string.trim()
+      : string.trim().toLocaleLowerCase();
   }
 
   /**
    * @private
    */
-  _defaultTokenize(text: string): Array<string> {
-    return text.split(/\s+/).filter(text => text); // Remove empty tokens
+  _tokenize(text: string): Array<string> {
+    return text.split(this._tokenizePattern).filter(text => text); // Remove empty tokens
   }
 }

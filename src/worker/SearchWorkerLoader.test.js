@@ -7,6 +7,8 @@ class StubWorker {
     this.indexedDocumentMap = {};
     this.searchQueue = [];
     this.setIndexModeQueue = [];
+    this.setTokenizePatternQueue = [];
+    this.setCaseSensitiveQueue = [];
   }
 
   postMessage(data) {
@@ -27,6 +29,14 @@ class StubWorker {
       case "setIndexMode":
         const { indexMode } = props;
         this.setIndexModeQueue.push({ indexMode });
+        break;
+      case "setTokenizePattern":
+        const { tokenizePattern } = props;
+        this.setTokenizePatternQueue.push({ tokenizePattern });
+        break;
+      case "setCaseSensitive":
+        const { caseSensitive } = props;
+        this.setCaseSensitiveQueue.push({ caseSensitive });
         break;
     }
   }
@@ -144,5 +154,28 @@ test("SearchWorkerLoader should pass the specified :indexMode to the WorkerClass
 test("SearchWorkerLoader should not override the default :indexMode in the WorkerClass if an override is not requested", t => {
   const search = new SearchWorkerLoader({ WorkerClass: StubWorker });
   t.equal(search.worker.setIndexModeQueue.length, 0);
+  t.end();
+});
+
+test("SearchWorkerLoader should pass the specified :tokenizePattern to the WorkerClass", t => {
+  const search = new SearchWorkerLoader({
+    tokenizePattern: /[^a-z0-9]+/,
+    WorkerClass: StubWorker
+  });
+  t.equal(search.worker.setTokenizePatternQueue.length, 1);
+  t.deepLooseEqual(
+    search.worker.setTokenizePatternQueue[0].tokenizePattern,
+    /[^a-z0-9]+/
+  );
+  t.end();
+});
+
+test("SearchWorkerLoader should pass the specified :caseSensitive bit to the WorkerClass", t => {
+  const search = new SearchWorkerLoader({
+    caseSensitive: true,
+    WorkerClass: StubWorker
+  });
+  t.equal(search.worker.setCaseSensitiveQueue.length, 1);
+  t.true(search.worker.setCaseSensitiveQueue[0].caseSensitive);
   t.end();
 });

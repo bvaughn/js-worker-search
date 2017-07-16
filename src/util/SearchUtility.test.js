@@ -42,8 +42,12 @@ const documents = [
   documentF
 ];
 
-function init({ indexMode, tokenize, sanitize } = {}) {
-  const searchUtility = new SearchUtility({ indexMode, tokenize, sanitize });
+function init({ indexMode, tokenizePattern, caseSensitive } = {}) {
+  const searchUtility = new SearchUtility({
+    indexMode,
+    tokenizePattern,
+    caseSensitive
+  });
 
   documents.forEach(doc => {
     searchUtility.indexDocument(doc.get("id"), doc.get("name"));
@@ -201,20 +205,35 @@ test("SearchUtility should support EXACT_WORDS :indexMode", t => {
   t.end();
 });
 
-test("SearchUtility should support custom tokenizer", t => {
+test("SearchUtility should update its default :tokenizePattern when :setTokenizePattern() is called", t => {
+  const searchUtility = new SearchUtility();
+  searchUtility.setTokenizePattern(/[^a-z0-9]/);
+  t.deepLooseEqual(searchUtility.getTokenizePattern(), /[^a-z0-9]/);
+  t.end();
+});
+
+test("SearchUtility should update its default :caseSensitive bit when :setCaseSensitive() is called", t => {
+  const searchUtility = new SearchUtility();
+  t.equal(searchUtility.getCaseSensitive(), false);
+  searchUtility.setCaseSensitive(true);
+  t.equal(searchUtility.getCaseSensitive(), true);
+  t.end();
+});
+
+test("SearchUtility should support custom tokenizer pattern", t => {
   const searchUtility = init({
     indexMode: INDEX_MODES.EXACT_WORDS,
-    tokenize: text => text.split(/[^a-z0-9]+/).filter(text => text)
+    tokenizePattern: /[^a-z0-9]+/
   });
   t.deepLooseEqual(searchUtility.search("sexto"), [6]);
   t.deepLooseEqual(searchUtility.search("6o"), [6]);
   t.end();
 });
 
-test("SearchUtility should support custom sanitizer", t => {
+test("SearchUtility should support case sensitive search", t => {
   const searchUtility = init({
     indexMode: INDEX_MODES.EXACT_WORDS,
-    sanitize: text => text.trim()
+    caseSensitive: true
   });
   t.equal(searchUtility.search("First").length, 0);
   t.deepLooseEqual(searchUtility.search("first"), [1]);

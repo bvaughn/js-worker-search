@@ -8,7 +8,7 @@ export default class SearchWorkerLoader {
   /**
    * Constructor.
    */
-  constructor({ indexMode, WorkerClass } = {}) {
+  constructor({ indexMode, tokenizePattern, caseSensitive, WorkerClass } = {}) {
     // Defer worker import until construction to avoid testing error:
     // Error: Cannot find module 'worker!./[workername]'
     if (!WorkerClass) {
@@ -38,6 +38,22 @@ export default class SearchWorkerLoader {
       this.worker.postMessage({
         method: "setIndexMode",
         indexMode
+      });
+    }
+
+    // Override default :tokenizePattern if a specific one has been requested
+    if (tokenizePattern) {
+      this.worker.postMessage({
+        method: "setTokenizePattern",
+        tokenizePattern
+      });
+    }
+
+    // Override default :caseSensitive bit if a specific one has been requested
+    if (caseSensitive) {
+      this.worker.postMessage({
+        method: "setCaseSensitive",
+        caseSensitive
       });
     }
   }

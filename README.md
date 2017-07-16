@@ -89,26 +89,28 @@ const searchApi = new SearchApi({
 })
 ```
 
-### Custom tokenizer
+### Custom tokenizer patterns
 By default, `SearchApi` breaks text into words (tokenizes) using spaces and newlines
-as the delimiting character. If you want to provide your own tokenizer, pass a function
-to the constructor that splits a string into an array of substrings, like so:
+as the delimiting character. If you want to provide your own splitting rule, pass a
+RegExp to the constructor that defines the pattern , like so:
 
 ```js
-// custom tokenizer to include all non alphanumerics as delimeters
+// Custom tokenizer pattern to include all non alphanumerics as delimeters
+// ex: searching "Swift" matches "Thomas Swift" and "Thomas (Swift)" but not "swiftly tilting"
 const searchApi = new SearchApi({
-    tokenize: text => text.split(/[^a-z0-9]+/).filter(text => text)
+    indexMode: INDEX_MODES.EXACT_WORDS,
+    tokenizePattern: /[^a-z0-9]+/,
 })
 ```
 
-### Custom sanitizer
+### Case-sensitive searches
 The default sanitizer performs a case-insensitive search. If you want to override that
-behavior and do a case-sensitive search, for example, you would do something like this:
+behavior and do a case-sensitive search, set the caseSensitive bit to true, like so:
 
 ```js
 // custom sanitizer for case-sensitive searches
 const searchApi = new SearchApi({
-  sanitize: text => text.trim()
+  caseSensitive: true
 })
 ```
 
