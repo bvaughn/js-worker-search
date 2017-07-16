@@ -31,6 +31,16 @@ self.addEventListener(
 
         searchUtility.setIndexMode(indexMode);
         break;
+      case "setTokenizePattern":
+        const { tokenizePattern } = data;
+
+        searchUtility.setTokenizePattern(tokenizePattern);
+        break;
+      case "setCaseSensitive":
+        const { caseSensitive } = data;
+
+        searchUtility.setCaseSensitive(caseSensitive);
+        break;
     }
   },
   false
