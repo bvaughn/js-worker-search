@@ -1,6 +1,19 @@
 Changelog
 -----
 
+#### 1.1.3
+Added support for custom tokenizers and sanitizers to be specified in the constructor.
+
+```js
+// prefix matching with custom tokenizer to include all non alphanumerics as delimeters
+// and custom sanitizer for case-sensitive searches
+const searchApi = new SearchApi({
+    indexMode: INDEX_MODES.PREFIXES,
+    tokenize: text => text.split(/[^a-z0-9]+/).filter(text => text),
+    sanitize: text => text.trim()
+})
+```
+
 #### 1.1.1
 * 🐛 Replaced `for..of` with `forEach` in order to support IE 11. ([@jrubins](https://github.com/jrubins) - [#6](https://github.com/bvaughn/js-worker-search/pull/6))
 

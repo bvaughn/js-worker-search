@@ -10,9 +10,19 @@ export default class SearchUtility {
    * Constructor.
    *
    * @param indexMode See #setIndexMode
+   * @param tokenize A function that splits a string into an array of tokens to be searched
+   * @param sanitize A function that transforms a string before it is searched
    */
-  constructor({ indexMode = INDEX_MODES.ALL_SUBSTRINGS } = {}) {
+  constructor(
+    {
+      indexMode = INDEX_MODES.ALL_SUBSTRINGS,
+      tokenize = this._defaultTokenize,
+      sanitize = this._defaultSanitize
+    } = {}
+  ) {
     this._indexMode = indexMode;
+    this._tokenize = tokenize;
+    this._sanitize = sanitize;
 
     this.searchIndex = new SearchIndex();
     this.uids = {};
@@ -148,14 +158,14 @@ export default class SearchUtility {
   /**
    * @private
    */
-  _sanitize(string: string): string {
+  _defaultSanitize(string: string): string {
     return string.trim().toLocaleLowerCase();
   }
 
   /**
    * @private
    */
-  _tokenize(text: string): Array<string> {
+  _defaultTokenize(text: string): Array<string> {
     return text.split(/\s+/).filter(text => text); // Remove empty tokens
   }
 }

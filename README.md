@@ -67,6 +67,7 @@ searchApi.indexDocument('bar', 'Text describing an Object identified as "bar"')
 const promise = searchApi.search('describing')
 ```
 
+### Custom index mode
 By default, `SearchApi` builds an index to match all substrings.
 You can override this behavior by passing an `indexMode` parameter to the constructor like so:
 
@@ -85,6 +86,29 @@ const searchApi = new SearchApi({
 // exact words matching (eg only "cat" matches "cat")
 const searchApi = new SearchApi({
   indexMode: INDEX_MODES.EXACT_WORDS
+})
+```
+
+### Custom tokenizer
+By default, `SearchApi` breaks text into words (tokenizes) using spaces and newlines
+as the delimiting character. If you want to provide your own tokenizer, pass a function
+to the constructor that splits a string into an array of substrings, like so:
+
+```js
+// custom tokenizer to include all non alphanumerics as delimeters
+const searchApi = new SearchApi({
+    tokenize: text => text.split(/[^a-z0-9]+/).filter(text => text)
+})
+```
+
+### Custom sanitizer
+The default sanitizer performs a case-insensitive search. If you want to override that
+behavior and do a case-sensitive search, for example, you would do something like this:
+
+```js
+// custom sanitizer for case-sensitive searches
+const searchApi = new SearchApi({
+  sanitize: text => text.trim()
 })
 ```
 

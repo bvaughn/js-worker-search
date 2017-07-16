@@ -28,10 +28,22 @@ const documentE = Immutable.fromJS({
   name: "ㄨ穯ゆ姎囥",
   description: "楌ぴ 堦ヴ礯 ラ蝥曣んを 檨儯饨䶧䏤"
 });
-const documents = [documentA, documentB, documentC, documentD, documentE];
+const documentF = Immutable.fromJS({
+  id: 6,
+  name: "Six",
+  description: "Este es el sexto/6o documento"
+});
+const documents = [
+  documentA,
+  documentB,
+  documentC,
+  documentD,
+  documentE,
+  documentF
+];
 
-function init({ indexMode } = {}) {
-  const searchUtility = new SearchUtility({ indexMode });
+function init({ indexMode, tokenize, sanitize } = {}) {
+  const searchUtility = new SearchUtility({ indexMode, tokenize, sanitize });
 
   documents.forEach(doc => {
     searchUtility.indexDocument(doc.get("id"), doc.get("name"));
@@ -83,7 +95,7 @@ test("SearchUtility should return an empty array for query without matching docu
 test("SearchUtility should return all uids for an empty query", t => {
   const searchUtility = init();
   const ids = searchUtility.search("");
-  t.equal(ids.length, 5);
+  t.equal(ids.length, documents.length);
   t.end();
 });
 
@@ -186,5 +198,25 @@ test("SearchUtility should support EXACT_WORDS :indexMode", t => {
   noMatch.forEach(token => {
     t.equal(searchUtility.search(token).length, 0);
   });
+  t.end();
+});
+
+test("SearchUtility should support custom tokenizer", t => {
+  const searchUtility = init({
+    indexMode: INDEX_MODES.EXACT_WORDS,
+    tokenize: text => text.split(/[^a-z0-9]+/).filter(text => text)
+  });
+  t.deepLooseEqual(searchUtility.search("sexto"), [6]);
+  t.deepLooseEqual(searchUtility.search("6o"), [6]);
+  t.end();
+});
+
+test("SearchUtility should support custom sanitizer", t => {
+  const searchUtility = init({
+    indexMode: INDEX_MODES.EXACT_WORDS,
+    sanitize: text => text.trim()
+  });
+  t.equal(searchUtility.search("First").length, 0);
+  t.deepLooseEqual(searchUtility.search("first"), [1]);
   t.end();
 });
