@@ -1,7 +1,7 @@
+/** @flow */
+
 /**
- * Maps search tokens to uids.
- * This structure is used by the Search class to optimize search operations.
- * Forked from JS search (github.com/bvaughn/js-search).
+ * Maps search tokens to uids using a trie structure.
  */
 export default class SearchIndex {
   tokenToUidMap: { [token: string]: any };
@@ -54,9 +54,8 @@ export default class SearchIndex {
     });
 
     let uids: Array<any> = [];
-
     for (let uid in uidMap) {
-      uids.push(uidMap[uid]);
+      uids.push(uid);
     }
 
     return uids;

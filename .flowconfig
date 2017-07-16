@@ -1,0 +1,11 @@
+[ignore]
+benchmarks
+
+[include]
+src/**/*.js
+
+[libs]
+
+[options]
+
+[lints]
