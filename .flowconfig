@@ -1,4 +1,5 @@
 [ignore]
+benchmarks
 
 [include]
 src/**/*.js
