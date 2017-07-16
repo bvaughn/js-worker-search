@@ -1,13 +1,20 @@
+/** @flow */
+
 import test from "tape";
 import SearchWorkerLoader from "./SearchWorkerLoader";
 import { INDEX_MODES } from "../util";
 
+import type { CallbackData } from "./SearchWorkerLoader";
+
+function noop() {}
+
 class StubWorker {
-  constructor() {
-    this.indexedDocumentMap = {};
-    this.searchQueue = [];
-    this.setIndexModeQueue = [];
-  }
+  onerror: ({ data: CallbackData }) => void;
+  onmessage: ({ data: CallbackData }) => void;
+
+  _indexedDocumentMap = {};
+  _searchQueue = [];
+  _setIndexModeQueue = [];
 
   postMessage(data) {
     const { method, ...props } = data;
@@ -15,30 +22,48 @@ class StubWorker {
     switch (method) {
       case "indexDocument":
         const { uid, text } = props;
-        if (!this.indexedDocumentMap[uid]) {
-          this.indexedDocumentMap[uid] = [];
+        if (!this._indexedDocumentMap[uid]) {
+          this._indexedDocumentMap[uid] = [];
         }
-        this.indexedDocumentMap[uid].push(text);
+        this._indexedDocumentMap[uid].push(text);
         break;
       case "search":
         const { callbackId, query } = props;
-        this.searchQueue.push({ callbackId, query });
+        this._searchQueue.push({ callbackId, query });
         break;
       case "setIndexMode":
         const { indexMode } = props;
-        this.setIndexModeQueue.push({ indexMode });
+        this._setIndexModeQueue.push({ indexMode });
         break;
     }
   }
 
-  rejectSearch(index, error) {
-    const { callbackId } = this.searchQueue[index];
-    this.onerror({ data: { error, callbackId } });
+  rejectSearch(index: number, error: Error) {
+    const { callbackId } = this._searchQueue[index];
+    this.onerror({
+      data: {
+        error,
+        callbackId,
+        complete: true,
+        reject: noop,
+        resolve: noop,
+        results: null
+      }
+    });
   }
 
-  resolveSearch(index, results) {
-    const { callbackId } = this.searchQueue[index];
-    this.onmessage({ data: { results, callbackId } });
+  resolveSearch(index: number, results: Array<string>) {
+    const { callbackId } = this._searchQueue[index];
+    this.onmessage({
+      data: {
+        callbackId,
+        complete: true,
+        error: null,
+        reject: noop,
+        resolve: noop,
+        results
+      }
+    });
   }
 }
 
@@ -48,26 +73,26 @@ test("SearchWorkerLoader indexDocument should index a document with the specifie
   search.indexDocument("a", "dog");
   search.indexDocument("b", "cat");
 
-  t.equal(Object.keys(search.worker.indexedDocumentMap).length, 2);
-  t.equal(search.worker.indexedDocumentMap.a.length, 2);
-  t.deepLooseEqual(search.worker.indexedDocumentMap.a, ["cat", "dog"]);
-  t.equal(search.worker.indexedDocumentMap.b.length, 1);
-  t.deepLooseEqual(search.worker.indexedDocumentMap.b, ["cat"]);
+  t.equal(Object.keys(search._worker._indexedDocumentMap).length, 2);
+  t.equal(search._worker._indexedDocumentMap.a.length, 2);
+  t.deepLooseEqual(search._worker._indexedDocumentMap.a, ["cat", "dog"]);
+  t.equal(search._worker._indexedDocumentMap.b.length, 1);
+  t.deepLooseEqual(search._worker._indexedDocumentMap.b, ["cat"]);
   t.end();
 });
 
 test("SearchWorkerLoader search should search for the specified text", t => {
   const search = new SearchWorkerLoader({ WorkerClass: StubWorker });
   search.search("cat");
-  t.equal(search.worker.searchQueue.length, 1);
-  t.equal(search.worker.searchQueue[0].query, "cat");
+  t.equal(search._worker._searchQueue.length, 1);
+  t.equal(search._worker._searchQueue[0].query, "cat");
   t.end();
 });
 
 test("SearchWorkerLoader search should resolve the returned Promise on search completion", async t => {
   const search = new SearchWorkerLoader({ WorkerClass: StubWorker });
   const promise = search.search("cat");
-  search.worker.resolveSearch(0, ["a", "b"]);
+  search._worker.resolveSearch(0, ["a", "b"]);
 
   const result = await promise;
   t.deepLooseEqual(result, ["a", "b"]);
@@ -77,8 +102,8 @@ test("SearchWorkerLoader search should resolve the returned Promise on search co
 test("SearchWorkerLoader search should resolve multiple concurrent searches", async t => {
   const search = new SearchWorkerLoader({ WorkerClass: StubWorker });
   const promises = Promise.all([search.search("cat"), search.search("dog")]);
-  search.worker.resolveSearch(0, ["a"]);
-  search.worker.resolveSearch(1, ["a", "b"]);
+  search._worker.resolveSearch(0, ["a"]);
+  search._worker.resolveSearch(1, ["a", "b"]);
   await promises;
   t.end();
 });
@@ -92,9 +117,9 @@ test("SearchWorkerLoader search should resolve searches in the correct order", a
     search.search("rat")
   ].map(promise => promise.then(result => results.push(result)));
 
-  search.worker.resolveSearch(1, ["1"]);
-  search.worker.resolveSearch(0, ["0"]);
-  search.worker.resolveSearch(2, ["2"]);
+  search._worker.resolveSearch(1, ["1"]);
+  search._worker.resolveSearch(0, ["0"]);
+  search._worker.resolveSearch(2, ["2"]);
 
   await Promise.all(promiseList);
   const [r1, r2, r3] = results;
@@ -114,8 +139,8 @@ test("SearchWorkerLoader search should not reject all searches if one fails", as
       .catch(error => errors.push(error))
   );
 
-  search.worker.rejectSearch(1, new Error("1"));
-  search.worker.resolveSearch(0, ["0"]);
+  search._worker.rejectSearch(1, new Error("1"));
+  search._worker.resolveSearch(0, ["0"]);
 
   try {
     await Promise.all(promises);
@@ -133,9 +158,9 @@ test("SearchWorkerLoader should pass the specified :indexMode to the WorkerClass
     indexMode: INDEX_MODES.EXACT_WORDS,
     WorkerClass: StubWorker
   });
-  t.equal(search.worker.setIndexModeQueue.length, 1);
+  t.equal(search._worker._setIndexModeQueue.length, 1);
   t.equal(
-    search.worker.setIndexModeQueue[0].indexMode,
+    search._worker._setIndexModeQueue[0].indexMode,
     INDEX_MODES.EXACT_WORDS
   );
   t.end();
@@ -143,6 +168,6 @@ test("SearchWorkerLoader should pass the specified :indexMode to the WorkerClass
 
 test("SearchWorkerLoader should not override the default :indexMode in the WorkerClass if an override is not requested", t => {
   const search = new SearchWorkerLoader({ WorkerClass: StubWorker });
-  t.equal(search.worker.setIndexModeQueue.length, 0);
+  t.equal(search._worker._setIndexModeQueue.length, 0);
   t.end();
 });

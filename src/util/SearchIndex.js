@@ -1,13 +1,20 @@
+/** @flow */
+
+type Node = {
+  [charCode: any]: Node,
+  "0": Array<any>
+};
+
 /**
- * Maps search tokens to uids.
- * This structure is used by the Search class to optimize search operations.
- * Forked from JS search (github.com/bvaughn/js-search).
+ * Maps search tokens to uids using a trie structure.
  */
 export default class SearchIndex {
-  tokenToUidMap: { [token: string]: any };
+  _root: Node;
 
   constructor() {
-    this.tokenToUidMap = {};
+    this._root = {
+      "0": []
+    };
   }
 
   /**
@@ -17,11 +24,26 @@ export default class SearchIndex {
    * @param uid Identifies a document within the searchable corpus
    */
   indexDocument(token: string, uid: any): void {
-    if (!this.tokenToUidMap[token]) {
-      this.tokenToUidMap[token] = {};
-    }
+    let node = this._root;
 
-    this.tokenToUidMap[token][uid] = uid;
+    for (let i = 0; i < token.length; i++) {
+      // Index 0 is where we store lookup to words matching this node.
+      // So char codes are offset by 1 to avoid conflicting.
+      let char = token.charCodeAt(i) + 1;
+
+      let child = node[char];
+      if (typeof child === "object") {
+        child["0"].push(uid);
+      } else {
+        child = {
+          "0": [uid]
+        };
+
+        node[char] = child;
+      }
+
+      node = child;
+    }
   }
 
   /**
@@ -36,14 +58,15 @@ export default class SearchIndex {
     let initialized = false;
 
     tokens.forEach(token => {
-      let currentUidMap: { [uid: any]: any } = this.tokenToUidMap[token] || {};
+      let currentUids = this._find(token);
+      let currentUidMap = currentUids.reduce((map, uid) => {
+        map[uid] = uid;
+        return map;
+      }, {});
 
       if (!initialized) {
         initialized = true;
-
-        for (let uid in currentUidMap) {
-          uidMap[uid] = currentUidMap[uid];
-        }
+        uidMap = currentUidMap;
       } else {
         for (let uid in uidMap) {
           if (!currentUidMap[uid]) {
@@ -54,11 +77,22 @@ export default class SearchIndex {
     });
 
     let uids: Array<any> = [];
-
     for (let uid in uidMap) {
-      uids.push(uidMap[uid]);
+      uids.push(uid);
     }
 
     return uids;
+  }
+
+  _find(token: string): Array<any> {
+    var node = this._root;
+    for (var j = 0; j < token.length; j++) {
+      var char = token.charCodeAt(j) + 1;
+      node = node[char];
+      if (!node) {
+        return [];
+      }
+    }
+    return node["0"];
   }
 }

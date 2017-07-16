@@ -1,3 +1,5 @@
+/** @flow */
+
 export const INDEX_MODES = {
   // Indexes for all substring searches (e.g. the term "cat" is indexed as "c", "ca", "cat", "a", "at", and "t").
   // Based on 'all-substrings-index-strategy' from js-search;
@@ -14,3 +16,5 @@ export const INDEX_MODES = {
   // github.com/bvaughn/js-search/blob/master/source/index-strategy/prefix-index-strategy.ts
   PREFIXES: "PREFIXES"
 };
+
+export type IndexMode = $Keys<typeof INDEX_MODES>;

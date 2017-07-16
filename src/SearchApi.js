@@ -1,12 +1,18 @@
-import SearchUtility from "./util";
+/** @flow */
+
+import { SearchUtility } from "./util";
 import SearchWorkerLoader from "./worker";
+
+import type { IndexMode } from "./util";
 
 /**
  * Search API that uses web workers when available.
  * Indexing and searching is performed in the UI thread as a fallback when web workers aren't supported.
  */
 export default class SearchApi {
-  constructor({ indexMode } = {}) {
+  _search: any; // TODO
+
+  constructor({ indexMode }: { indexMode: IndexMode } = {}) {
     // Based on https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
     // But with added check for Node environment
     if (typeof window !== "undefined" && window.Worker) {
@@ -14,10 +20,6 @@ export default class SearchApi {
     } else {
       this._search = new SearchUtility({ indexMode });
     }
-
-    // Prevent methods from losing context when passed around.
-    this.indexDocument = this.indexDocument.bind(this);
-    this.search = this.search.bind(this);
   }
 
   /**
@@ -27,11 +29,11 @@ export default class SearchApi {
    * @param uid Uniquely identifies a searchable object
    * @param text Text to associate with uid
    */
-  indexDocument(uid: any, text: string): SearchApi {
+  indexDocument = (uid: any, text: string): SearchApi => {
     this._search.indexDocument(uid, text);
 
     return this;
-  }
+  };
 
   /**
    * Searches the current index for the specified query text.
@@ -44,8 +46,8 @@ export default class SearchApi {
    * @param query Searchable query text
    * @return Promise to be resolved with an Array of matching uids
    */
-  search(query: string): Promise {
+  search = (query: string): Promise<Array<any>> => {
     // Promise.resolve handles both synchronous and web-worker Search utilities
-    return Promise.resolve(this._search.search(query));
-  }
+    return this._search.search(query);
+  };
 }
