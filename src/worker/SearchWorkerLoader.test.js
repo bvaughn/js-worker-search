@@ -122,9 +122,9 @@ test("SearchWorkerLoader search should resolve searches in the correct order", a
   const search = new SearchWorkerLoader({ WorkerClass: StubWorker });
   const results = [];
   const promiseList = [
-    search.search("cat"),
-    search.search("dog"),
-    search.search("rat")
+    Promise.resolve(search.search("cat")),
+    Promise.resolve(search.search("dog")),
+    Promise.resolve(search.search("rat"))
   ].map(promise => promise.then(result => results.push(result)));
 
   search._worker.resolveSearch(1, ["1"]);
@@ -143,7 +143,10 @@ test("SearchWorkerLoader search should not reject all searches if one fails", as
   const search = new SearchWorkerLoader({ WorkerClass: StubWorker });
   const errors = [];
   const results = [];
-  const promises = [search.search("cat"), search.search("dog")].map(promise =>
+  const promises = [
+    Promise.resolve(search.search("cat")),
+    Promise.resolve(search.search("dog"))
+  ].map(promise =>
     promise
       .then(result => results.push(result))
       .catch(error => errors.push(error))

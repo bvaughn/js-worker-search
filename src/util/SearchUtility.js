@@ -102,13 +102,13 @@ export default class SearchUtility implements SearchApiIndex {
    * @param query Searchable query text
    * @return Array of uids
    */
-  search = (query: string): Promise<Array<any>> => {
+  search = (query: string): Array<any> => {
     if (!query) {
-      return Promise.resolve(Object.keys(this._uids));
+      return Object.keys(this._uids);
     } else {
       var tokens: Array<string> = this._tokenize(this._sanitize(query));
 
-      return Promise.resolve(this._searchIndex.search(tokens));
+      return this._searchIndex.search(tokens);
     }
   };
 

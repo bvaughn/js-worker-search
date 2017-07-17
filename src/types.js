@@ -19,5 +19,5 @@ export interface SearchApiIndex {
    * @param tokens Array of searchable tokens (e.g. ["long", "road"])
    * @return Array of uids that have been associated with the set of search tokens
    */
-  search: (query: string) => Promise<Array<any>>
+  search: (query: string) => Array<any> | Promise<Array<any>>
 }
