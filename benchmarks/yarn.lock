@@ -17,10 +17,15 @@ bindings@1.2.x:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/bindings/-/bindings-1.2.1.tgz#14ad6113812d2d37d72e67b4cacb4bb726505f11"
 
-js-worker-search@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/js-worker-search/-/js-worker-search-1.1.2.tgz#9b96545d292bf53fa5ea3fcbae68ce489d1527fa"
+flow-bin@^0.50.0:
+  version "0.50.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.50.0.tgz#d4cdb2430dee1a3599f0eb6fe551146e3027256a"
+
+js-worker-search@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/js-worker-search/-/js-worker-search-1.2.0.tgz#ef18d029bda0d8ef412d4f680d2d0b041b5f8e62"
   dependencies:
+    flow-bin "^0.50.0"
     uuid "^2.0.1"
 
 lodash@^4.17.3, lodash@^4.17.4:

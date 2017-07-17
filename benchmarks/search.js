@@ -54,9 +54,10 @@ function doSearch(search) {
 }
 
 function runTests() {
+  console.log("Testing search speeds ...");
+
   new Benchmark.Suite()
     .on("cycle", event => {
-      console.log(String(event.target));
       bb.add(event.target);
     })
     .on("complete", () => {

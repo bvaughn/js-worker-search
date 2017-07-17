@@ -25,9 +25,10 @@ function buildIndex(SearchApi) {
 }
 
 function runTests() {
+  console.log("Testing search index creation ...");
+
   new Benchmark.Suite()
     .on("cycle", event => {
-      console.log(String(event.target));
       bb.add(event.target);
     })
     .on("complete", () => {
