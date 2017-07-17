@@ -7,27 +7,27 @@ import { INDEX_MODES } from "./constants";
 import type { IndexMode } from "./constants";
 
 const documentA = fromJS({
-  id: "1",
+  id: 1,
   name: "One",
   description: "The first document"
 });
 const documentB = fromJS({
-  id: "2",
+  id: 2,
   name: "Two",
   description: "The second document"
 });
 const documentC = fromJS({
-  id: "3",
+  id: 3,
   name: "Three",
   description: "The third document"
 });
 const documentD = fromJS({
-  id: "4",
+  id: 4,
   name: "楌ぴ",
   description: "堦ヴ礯 ラ蝥曣んを 檨儯饨䶧"
 });
 const documentE = fromJS({
-  id: "5",
+  id: 5,
   name: "ㄨ穯ゆ姎囥",
   description: "楌ぴ 堦ヴ礯 ラ蝥曣んを 檨儯饨䶧䏤"
 });
@@ -74,19 +74,19 @@ test("SearchUtility should return documents ids for any searchable field matchin
   const searchUtility = init();
   let ids = await searchUtility.search("One");
   t.equal(ids.length, 1);
-  t.deepLooseEqual(ids, ["1"]);
+  t.deepLooseEqual(ids, [1]);
 
   ids = await searchUtility.search("Third");
   t.equal(ids.length, 1);
-  t.deepLooseEqual(ids, ["3"]);
+  t.deepLooseEqual(ids, [3]);
 
   ids = await searchUtility.search("the");
   t.equal(ids.length, 3);
-  t.deepLooseEqual(ids, ["1", "2", "3"]);
+  t.deepLooseEqual(ids, [1, 2, 3]);
 
   ids = await searchUtility.search("楌"); // Tests matching of other script systems
   t.equal(ids.length, 2);
-  t.deepLooseEqual(ids, ["4", "5"]);
+  t.deepLooseEqual(ids, [4, 5]);
   t.end();
 });
 
@@ -94,11 +94,11 @@ test("SearchUtility should return documents ids only if document matches all tok
   const searchUtility = init();
   let ids = await searchUtility.search("the second");
   t.equal(ids.length, 1);
-  t.equal(ids[0], "2");
+  t.equal(ids[0], 2);
 
   ids = await searchUtility.search("three document"); // Spans multiple fields
   t.equal(ids.length, 1);
-  t.equal(ids[0], "3");
+  t.equal(ids[0], 3);
   t.end();
 });
 
@@ -122,7 +122,7 @@ test("SearchUtility should ignore case when searching", async t => {
   texts.forEach(async text => {
     const ids = await searchUtility.search(text);
     t.equal(ids.length, 1);
-    t.equal(ids[0], "1");
+    t.equal(ids[0], 1);
   });
 
   t.end();
@@ -134,14 +134,14 @@ test("SearchUtility should use substring matching", async t => {
   texts.forEach(async text => {
     let ids = await searchUtility.search(text);
     t.equal(ids.length, 1);
-    t.equal(ids[0], "2");
+    t.equal(ids[0], 2);
   });
 
   texts = ["堦", "堦ヴ", "堦ヴ礯", "ヴ", "ヴ礯"];
   texts.forEach(async text => {
     let ids = await searchUtility.search(text);
     t.equal(ids.length, 2);
-    t.deepLooseEqual(ids, ["4", "5"]);
+    t.deepLooseEqual(ids, [4, 5]);
   });
 
   t.end();
@@ -158,7 +158,7 @@ test("SearchUtility should allow custom indexing via indexDocument", async t => 
 
   ids = await searchUtility.search(text);
   t.equal(ids.length, 1);
-  t.equal(ids[0], "1");
+  t.equal(ids[0], 1);
   t.end();
 });
 

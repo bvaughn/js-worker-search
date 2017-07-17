@@ -55,7 +55,7 @@ export default class SearchIndex {
 
     let uids: Array<any> = [];
     for (let uid in uidMap) {
-      uids.push(uid);
+      uids.push(uidMap[uid]);
     }
 
     return uids;
