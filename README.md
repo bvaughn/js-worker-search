@@ -23,10 +23,12 @@ Forked from [JS search](github.com/bvaughn/js-search), this utility builds a sea
 
 SearchApi defines the following public methods:
 
-##### `constructor ({ indexMode })`
+##### `constructor ({ caseSensitive, indexMode, tokenizePattern })`
 By default, `SearchApi` builds an index to match all substrings.
 You can override this behavior by passing an named `indexMode` parameter.
 Valid values are `INDEX_MODES.ALL_SUBSTRINGS`, `INDEX_MODES.EXACT_WORDS`, and `INDEX_MODES.PREFIXES`.
+
+Searches are case insensitive by default and split on all whitespace characters. Read below for more information on customizing default options.
 
 ##### `indexDocument (uid, text)`
 Adds or updates a uid in the search index and associates it with the specified text. Note that at this time uids can only be added or updated in the index, not removed.
