@@ -27,6 +27,7 @@ function buildIndex(SearchApi) {
 function runTests() {
   new Benchmark.Suite()
     .on("cycle", event => {
+      console.log(String(event.target));
       bb.add(event.target);
     })
     .on("complete", () => {

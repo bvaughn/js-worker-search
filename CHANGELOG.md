@@ -1,7 +1,7 @@
 Changelog
 -----
 
-#### 1.1.3
+#### 1.2.0
 Added support for custom tokenizer patterns and case-sensitive search.
 
 ```js

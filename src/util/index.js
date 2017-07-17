@@ -5,5 +5,5 @@ import { INDEX_MODES } from "./constants";
 
 export type { IndexMode } from "./constants";
 
-export { INDEX_MODES, SearchUtility };
 export default SearchUtility;
+export { INDEX_MODES, SearchUtility };
