@@ -8,7 +8,7 @@ js-worker-search
 
 Full text client-side search based on [js-search](https://github.com/bvaughn/js-search) but with added web-worker support for better performance.
 
-Check out the [redux-search](http://treasure-data.github.io/redux-search/) for an example integration.
+Check out the [redux-search](https://bvaughn.github.io/redux-search/) for an example integration.
 
 Or install it yourself with NPM:
 
