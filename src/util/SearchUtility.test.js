@@ -36,13 +36,20 @@ const documentF = fromJS({
   name: "Six",
   description: "Este es el sexto/6o documento"
 });
+const documentG = fromJS({
+  id: 7,
+  name: "Seven",
+  description: "ქართული ენა"
+});
+
 const documents = [
   documentA,
   documentB,
   documentC,
   documentD,
   documentE,
-  documentF
+  documentF,
+  documentG
 ];
 
 function init(
@@ -84,9 +91,14 @@ test("SearchUtility should return documents ids for any searchable field matchin
   t.equal(ids.length, 3);
   t.deepLooseEqual(ids, [1, 2, 3]);
 
-  ids = await searchUtility.search("楌"); // Tests matching of other script systems
+  ids = await searchUtility.search("楌"); // Tests matching of other script systems, eg Japanese
   t.equal(ids.length, 2);
   t.deepLooseEqual(ids, [4, 5]);
+
+  ids = await searchUtility.search("ენ"); // Tests matching of other script systems, eg Georgian
+  t.equal(ids.length, 1);
+  t.deepLooseEqual(ids, [7]);
+
   t.end();
 });
 
