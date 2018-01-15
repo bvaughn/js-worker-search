@@ -5,6 +5,7 @@
 src/**/*.js
 
 [libs]
+./flow-defs.js
 
 [options]
 

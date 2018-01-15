@@ -1,6 +1,5 @@
 /** @flow */
 
-import test from "tape";
 import SearchWorkerLoader from "./SearchWorkerLoader";
 import { INDEX_MODES } from "../util";
 
@@ -77,48 +76,46 @@ class StubWorker {
   }
 }
 
-test("SearchWorkerLoader indexDocument should index a document with the specified text(s)", t => {
+test("SearchWorkerLoader indexDocument should index a document with the specified text(s)", () => {
   const search = new SearchWorkerLoader({ WorkerClass: StubWorker });
   search.indexDocument("a", "cat");
   search.indexDocument("a", "dog");
   search.indexDocument("b", "cat");
 
-  t.equal(Object.keys(search._worker._indexedDocumentMap).length, 2);
-  t.equal(search._worker._indexedDocumentMap.a.length, 2);
-  t.deepLooseEqual(search._worker._indexedDocumentMap.a, ["cat", "dog"]);
-  t.equal(search._worker._indexedDocumentMap.b.length, 1);
-  t.deepLooseEqual(search._worker._indexedDocumentMap.b, ["cat"]);
-  t.end();
+  expect(Object.keys(search._worker._indexedDocumentMap).length).toBe(2);
+  expect(search._worker._indexedDocumentMap.a.length).toBe(2);
+  expect(search._worker._indexedDocumentMap.a).toEqual(["cat", "dog"]);
+  expect(search._worker._indexedDocumentMap.b.length).toBe(1);
+  expect(search._worker._indexedDocumentMap.b).toEqual(["cat"]);
 });
 
-test("SearchWorkerLoader search should search for the specified text", t => {
+test("SearchWorkerLoader search should search for the specified text", () => {
   const search = new SearchWorkerLoader({ WorkerClass: StubWorker });
   search.search("cat");
-  t.equal(search._worker._searchQueue.length, 1);
-  t.equal(search._worker._searchQueue[0].query, "cat");
-  t.end();
+  expect(search._worker._searchQueue.length).toEqual(1);
+  expect(search._worker._searchQueue[0].query).toEqual("cat");
 });
 
-test("SearchWorkerLoader search should resolve the returned Promise on search completion", async t => {
+test("SearchWorkerLoader search should resolve the returned Promise on search completion", async done => {
   const search = new SearchWorkerLoader({ WorkerClass: StubWorker });
   const promise = search.search("cat");
   search._worker.resolveSearch(0, ["a", "b"]);
 
   const result = await promise;
-  t.deepLooseEqual(result, ["a", "b"]);
-  t.end();
+  expect(result).toEqual(["a", "b"]);
+  done();
 });
 
-test("SearchWorkerLoader search should resolve multiple concurrent searches", async t => {
+test("SearchWorkerLoader search should resolve multiple concurrent searches", async done => {
   const search = new SearchWorkerLoader({ WorkerClass: StubWorker });
   const promises = Promise.all([search.search("cat"), search.search("dog")]);
   search._worker.resolveSearch(0, ["a"]);
   search._worker.resolveSearch(1, ["a", "b"]);
   await promises;
-  t.end();
+  done();
 });
 
-test("SearchWorkerLoader search should resolve searches in the correct order", async t => {
+test("SearchWorkerLoader search should resolve searches in the correct order", async done => {
   const search = new SearchWorkerLoader({ WorkerClass: StubWorker });
   const results = [];
   const promiseList = [
@@ -133,13 +130,13 @@ test("SearchWorkerLoader search should resolve searches in the correct order", a
 
   await Promise.all(promiseList);
   const [r1, r2, r3] = results;
-  t.deepLooseEqual(r1, ["0"]);
-  t.deepLooseEqual(r2, ["1"]);
-  t.deepLooseEqual(r3, ["2"]);
-  t.end();
+  expect(r1).toEqual(["0"]);
+  expect(r2).toEqual(["1"]);
+  expect(r3).toEqual(["2"]);
+  done();
 });
 
-test("SearchWorkerLoader search should not reject all searches if one fails", async t => {
+test("SearchWorkerLoader search should not reject all searches if one fails", async done => {
   const search = new SearchWorkerLoader({ WorkerClass: StubWorker });
   const errors = [];
   const results = [];
@@ -159,51 +156,45 @@ test("SearchWorkerLoader search should not reject all searches if one fails", as
     await Promise.all(promises);
   } catch (err) {}
 
-  t.equal(results.length, 1);
-  t.deepLooseEqual(results[0], ["0"]);
-  t.equal(errors.length, 1);
-  t.equal(errors[0].message, "1");
-  t.end();
+  expect(results.length).toBe(1);
+  expect(results[0]).toEqual(["0"]);
+  expect(errors.length).toBe(1);
+  expect(errors[0].message).toBe("1");
+  done();
 });
 
-test("SearchWorkerLoader should pass the specified :indexMode to the WorkerClass", t => {
+test("SearchWorkerLoader should pass the specified :indexMode to the WorkerClass", () => {
   const search = new SearchWorkerLoader({
     indexMode: INDEX_MODES.EXACT_WORDS,
     WorkerClass: StubWorker
   });
-  t.equal(search._worker._setIndexModeQueue.length, 1);
-  t.equal(
-    search._worker._setIndexModeQueue[0].indexMode,
+  expect(search._worker._setIndexModeQueue.length).toBe(1);
+  expect(search._worker._setIndexModeQueue[0].indexMode).toBe(
     INDEX_MODES.EXACT_WORDS
   );
-  t.end();
 });
 
-test("SearchWorkerLoader should not override the default :indexMode in the WorkerClass if an override is not requested", t => {
+test("SearchWorkerLoader should not override the default :indexMode in the WorkerClass if an override is not requested", () => {
   const search = new SearchWorkerLoader({ WorkerClass: StubWorker });
-  t.equal(search._worker._setIndexModeQueue.length, 0);
-  t.end();
+  expect(search._worker._setIndexModeQueue.length).toBe(0);
 });
 
-test("SearchWorkerLoader should pass the specified :tokenizePattern to the WorkerClass", t => {
+test("SearchWorkerLoader should pass the specified :tokenizePattern to the WorkerClass", () => {
   const search = new SearchWorkerLoader({
     tokenizePattern: /[^a-z0-9]+/,
     WorkerClass: StubWorker
   });
-  t.equal(search._worker._setTokenizePatternQueue.length, 1);
-  t.deepLooseEqual(
-    search._worker._setTokenizePatternQueue[0].tokenizePattern,
+  expect(search._worker._setTokenizePatternQueue.length).toBe(1);
+  expect(search._worker._setTokenizePatternQueue[0].tokenizePattern).toEqual(
     /[^a-z0-9]+/
   );
-  t.end();
 });
 
-test("SearchWorkerLoader should pass the specified :caseSensitive bit to the WorkerClass", t => {
+test("SearchWorkerLoader should pass the specified :caseSensitive bit to the WorkerClass", () => {
   const search = new SearchWorkerLoader({
     caseSensitive: true,
     WorkerClass: StubWorker
   });
-  t.equal(search._worker._setCaseSensitiveQueue.length, 1);
-  t.true(search._worker._setCaseSensitiveQueue[0].caseSensitive);
-  t.end();
+  expect(search._worker._setCaseSensitiveQueue.length).toBe(1);
+  expect(search._worker._setCaseSensitiveQueue[0].caseSensitive).toBe(true);
 });

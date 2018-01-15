@@ -19,7 +19,7 @@
     "pretest": "yarn run flow && yarn run prettier && yarn run lint",
     "prettier": "prettier --write 'src/**/*.js'",
     "start": "watch 'clear && yarn run lint -s && yarn run test -s' src",
-    "test": "babel-node node_modules/.bin/tape 'src/**/*.test.js' | tspec"
+    "test": "jest"
   },
   "keywords": [
     "search",
@@ -40,13 +40,18 @@
       "node_modules"
     ],
     "global": [
-      "self"
+      "describe",
+      "expect",
+      "it",
+      "self",
+      "test"
     ]
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
     "babel-eslint": "^7.2.3",
+    "babel-jest": "^22.1.0",
     "babel-loader": "^6.2.0",
     "babel-plugin-syntax-flow": "^6.3.13",
     "babel-plugin-transform-flow-strip-types": "^6.3.15",
@@ -58,10 +63,9 @@
     "eslint-plugin-flowtype": "^2.35.0",
     "eslint-plugin-prettier": "^2.1.2",
     "immutable": "^3.8.1",
+    "jest": "^22.1.1",
     "prettier": "^1.5.3",
     "rimraf": "^2.5.0",
-    "tap-spec": "^4.1.1",
-    "tape": "^4.4.0",
     "watch": "^1.0.2",
     "webpack": "^1.12.9",
     "worker-loader": "^0.8.1"
