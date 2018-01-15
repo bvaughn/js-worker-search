@@ -1,6 +1,9 @@
 Changelog
 -----
 
+#### 1.2.1
+Worker `onerror` method properly handles undefined `event.data` for errors during eg `indexDocument`. (This avoids causing a secondary error, as reported in [bvaughn/redux-search/issues/69)](https://github.com/bvaughn/redux-search/issues/69).)
+
 #### 1.2.0
 Added support for custom tokenizer patterns and case-sensitive search.
 
