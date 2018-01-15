@@ -58,8 +58,12 @@ export default class SearchWorkerLoader implements SearchApiIndex {
 
     this._worker = new WorkerClass();
     this._worker.onerror = event => {
-      const { callbackId, error } = event.data;
-      this._updateQueue({ callbackId, error });
+      if (event.data) {
+        const { callbackId, error } = event.data;
+        this._updateQueue({ callbackId, error });
+      } else {
+        console.error(event);
+      }
     };
     this._worker.onmessage = event => {
       const { callbackId, results } = event.data;
