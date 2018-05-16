@@ -12,17 +12,15 @@ import type { IndexMode } from "./util";
 export default class SearchApi {
   _search: any; // TODO
 
-  constructor(
-    {
-      indexMode,
-      tokenizePattern,
-      caseSensitive
-    }: {
-      indexMode?: IndexMode,
-      tokenizePattern?: RegExp,
-      caseSensitive?: boolean
-    } = {}
-  ) {
+  constructor({
+    indexMode,
+    tokenizePattern,
+    caseSensitive
+  }: {
+    indexMode?: IndexMode,
+    tokenizePattern?: RegExp,
+    caseSensitive?: boolean
+  } = {}) {
     // Based on https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
     // But with added check for Node environment
     if (typeof window !== "undefined" && window.Worker) {
@@ -67,5 +65,12 @@ export default class SearchApi {
   search = (query: string): Promise<Array<any>> => {
     // Promise.resolve handles both synchronous and web-worker Search utilities
     return this._search.search(query);
+  };
+
+  /**
+   *  Stops and retires the worker in the search API. Used for cleanup.
+   */
+  terminate = () => {
+    this._search.terminate();
   };
 }
