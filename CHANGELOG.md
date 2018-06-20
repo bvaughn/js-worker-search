@@ -1,6 +1,9 @@
 Changelog
 -----
 
+#### 1.3.0
+* Added `terminate` method to enable library users to kill the web worker ([@LrsK](https://github.com/LrsK) - [#15](https://github.com/bvaughn/js-worker-search/pull/15))
+
 #### 1.2.1
 Worker `onerror` method properly handles undefined `event.data` for errors during eg `indexDocument`. (This avoids causing a secondary error, as reported in [bvaughn/redux-search/issues/69)](https://github.com/bvaughn/redux-search/issues/69).)
 
