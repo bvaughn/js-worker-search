@@ -28,17 +28,15 @@ export default class SearchUtility implements SearchApiIndex {
    * @param tokenizePattern See #setTokenizePattern
    * @param caseSensitive See #setCaseSensitive
    */
-  constructor(
-    {
-      indexMode = INDEX_MODES.ALL_SUBSTRINGS,
-      tokenizePattern = /\s+/,
-      caseSensitive = false
-    }: {
-      indexMode?: IndexMode,
-      tokenizePattern?: RegExp,
-      caseSensitive?: boolean
-    } = {}
-  ) {
+  constructor({
+    indexMode = INDEX_MODES.ALL_SUBSTRINGS,
+    tokenizePattern = /\s+/,
+    caseSensitive = false
+  }: {
+    indexMode?: IndexMode,
+    tokenizePattern?: RegExp,
+    caseSensitive?: boolean
+  } = {}) {
     this._indexMode = indexMode;
     this._tokenizePattern = tokenizePattern;
     this._caseSensitive = caseSensitive;
@@ -139,6 +137,11 @@ export default class SearchUtility implements SearchApiIndex {
   setCaseSensitive(caseSensitive: boolean): void {
     this._caseSensitive = caseSensitive;
   }
+
+  /**
+   *  Added to make class adhere to interface. Add cleanup code as needed.
+   */
+  terminate = () => {};
 
   /**
    * Index strategy based on 'all-substrings-index-strategy.ts' in github.com/bvaughn/js-search/
