@@ -12,15 +12,17 @@ import type { IndexMode } from "./util";
 export default class SearchApi {
   _search: any; // TODO
 
-  constructor({
-    indexMode,
-    tokenizePattern,
-    caseSensitive
-  }: {
-    indexMode?: IndexMode,
-    tokenizePattern?: RegExp,
-    caseSensitive?: boolean
-  } = {}) {
+  constructor(
+    {
+      indexMode,
+      tokenizePattern,
+      caseSensitive
+    }: {
+      indexMode?: IndexMode,
+      tokenizePattern?: RegExp,
+      caseSensitive?: boolean
+    } = {}
+  ) {
     // Based on https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
     // But with added check for Node environment
     if (typeof window !== "undefined" && window.Worker) {

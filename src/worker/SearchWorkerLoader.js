@@ -33,17 +33,19 @@ export default class SearchWorkerLoader implements SearchApiIndex {
   /**
    * Constructor.
    */
-  constructor({
-    indexMode,
-    tokenizePattern,
-    caseSensitive,
-    WorkerClass
-  }: {
-    indexMode?: IndexMode,
-    tokenizePattern?: RegExp,
-    caseSensitive?: boolean,
-    WorkerClass?: Class<Worker>
-  } = {}) {
+  constructor(
+    {
+      indexMode,
+      tokenizePattern,
+      caseSensitive,
+      WorkerClass
+    }: {
+      indexMode?: IndexMode,
+      tokenizePattern?: RegExp,
+      caseSensitive?: boolean,
+      WorkerClass?: Class<Worker>
+    } = {}
+  ) {
     // Defer worker import until construction to avoid testing error:
     // Error: Cannot find module 'worker!./[workername]'
     if (!WorkerClass) {
