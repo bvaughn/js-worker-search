@@ -47,6 +47,9 @@ Parameters:
 
 This method will return an array of uids.
 
+##### `terminate()`
+If search is running in a web worker, this will terminate the worker to allow for garbage collection.
+
 Example Usage
 ------
 
