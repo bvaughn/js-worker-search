@@ -48,7 +48,7 @@ Parameters:
 This method will return an array of uids.
 
 ##### `terminate()`
-This method runs the search provider's internal `terminate` method, which is intended for clean-up code. When using `SearchWorkerLoader`, this will terminate the worker to allow garbage collection.
+If search is running in a web worker, this will terminate the worker to allow for garbage collection.
 
 Example Usage
 ------
