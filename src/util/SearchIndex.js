@@ -29,10 +29,12 @@ export default class SearchIndex {
    * Only uids that have been mapped to all tokens will be returned.
    *
    * @param tokens Array of searchable tokens (e.g. ["long", "road"])
+   * @param matchAnyToken Whether to match any token. Default is false.
    * @return Array of uids that have been associated with the set of search tokens
    */
-  search(tokens: Array<string>): Array<any> {
+  search(tokens: Array<string>, matchAnyToken: boolean): Array<any> {
     let uidMap: { [uid: any]: any } = {};
+    let uidMatches: { [uid: any]: number } = {};
     let initialized = false;
 
     tokens.forEach(token => {
@@ -43,11 +45,21 @@ export default class SearchIndex {
 
         for (let uid in currentUidMap) {
           uidMap[uid] = currentUidMap[uid];
+          uidMatches[uid] = 1;
         }
       } else {
-        for (let uid in uidMap) {
-          if (!currentUidMap[uid]) {
-            delete uidMap[uid];
+        // Delete existing matches if using and AND query (the default)
+        // Otherwise add new results to the matches
+        if (!matchAnyToken) {
+          for (let uid in uidMap) {
+            if (!currentUidMap[uid]) {
+              delete uidMap[uid];
+            }
+          }
+        } else {
+          for (let uid in currentUidMap) {
+            uidMap[uid] = currentUidMap[uid];
+            uidMatches[uid] = (uidMatches[uid] || 0) + 1;
           }
         }
       }
@@ -56,6 +68,13 @@ export default class SearchIndex {
     let uids: Array<any> = [];
     for (let uid in uidMap) {
       uids.push(uidMap[uid]);
+    }
+
+    // Sort according to most matches, if match any token is set.
+    if (matchAnyToken) {
+      uids.sort((a, b) => {
+        return uidMatches[b] - uidMatches[a];
+      });
     }
 
     return uids;

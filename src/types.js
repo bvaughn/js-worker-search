@@ -14,7 +14,7 @@ export interface SearchApiIndex {
 
   /**
    * Finds uids that have been mapped to the set of tokens specified.
-   * Only uids that have been mapped to all tokens will be returned.
+   * Only uids that have been mapped to all tokens will be returned by default.
    *
    * @param tokens Array of searchable tokens (e.g. ["long", "road"])
    * @return Array of uids that have been associated with the set of search tokens

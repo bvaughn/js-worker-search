@@ -55,17 +55,20 @@ function init(
   {
     indexMode,
     tokenizePattern,
-    caseSensitive
+    caseSensitive,
+    matchAnyToken
   }: {
     indexMode?: IndexMode,
     tokenizePattern?: RegExp,
-    caseSensitive?: boolean
+    caseSensitive?: boolean,
+    matchAnyToken?: boolean
   } = {}
 ) {
   const searchUtility = new SearchUtility({
     indexMode,
     tokenizePattern,
-    caseSensitive
+    caseSensitive,
+    matchAnyToken
   });
 
   documents.forEach(doc => {
@@ -110,6 +113,15 @@ test("SearchUtility should return documents ids only if document matches all tok
   ids = await searchUtility.search("three document"); // Spans multiple fields
   expect(ids.length).toBe(1);
   expect(ids[0]).toBe(3);
+  done();
+});
+
+test("SearchUtility should return matching documents for any token, if specified", async done => {
+  const searchUtility = init({ matchAnyToken: true });
+  let ids = await searchUtility.search("first two second");
+  expect(ids.length).toBe(2);
+  expect(ids[0]).toBe(2); // The second document has most matches
+  expect(ids[1]).toBe(1);
   done();
 });
 

@@ -18,6 +18,7 @@ export default class SearchUtility implements SearchApiIndex {
   _indexMode: IndexMode;
   _tokenizePattern: RegExp;
   _caseSensitive: boolean;
+  _matchAnyToken: boolean;
   _searchIndex: SearchIndex;
   _uids: UidMap;
 
@@ -27,21 +28,25 @@ export default class SearchUtility implements SearchApiIndex {
    * @param indexMode See #setIndexMode
    * @param tokenizePattern See #setTokenizePattern
    * @param caseSensitive See #setCaseSensitive
+   * @param matchAnyToken See #setMatchAnyToken
    */
   constructor(
     {
       indexMode = INDEX_MODES.ALL_SUBSTRINGS,
       tokenizePattern = /\s+/,
-      caseSensitive = false
+      caseSensitive = false,
+      matchAnyToken = false
     }: {
       indexMode?: IndexMode,
       tokenizePattern?: RegExp,
-      caseSensitive?: boolean
+      caseSensitive?: boolean,
+      matchAnyToken?: boolean
     } = {}
   ) {
     this._indexMode = indexMode;
     this._tokenizePattern = tokenizePattern;
     this._caseSensitive = caseSensitive;
+    this._matchAnyToken = matchAnyToken;
 
     this._searchIndex = new SearchIndex();
     this._uids = {};
@@ -69,6 +74,13 @@ export default class SearchUtility implements SearchApiIndex {
   }
 
   /**
+   * Returns a constant representing the current match-any-token bit.
+   */
+  getMatchAnyToken(): boolean {
+    return this._matchAnyToken;
+  }
+
+  /**
    * Adds or updates a uid in the search index and associates it with the specified text.
    * Note that at this time uids can only be added or updated in the index, not removed.
    *
@@ -93,11 +105,12 @@ export default class SearchUtility implements SearchApiIndex {
 
   /**
    * Searches the current index for the specified query text.
-   * Only uids matching all of the words within the text will be accepted.
+   * Only uids matching all of the words within the text will be accepted,
+   * unless matchAny is set to true.
    * If an empty query string is provided all indexed uids will be returned.
    *
-   * Document searches are case-insensitive (e.g. "search" will match "Search").
-   * Document searches use substring matching (e.g. "na" and "me" will both match "name").
+   * Document searches are case-insensitive by default (e.g. "search" will match "Search").
+   * Document searches use substring matching by default (e.g. "na" and "me" will both match "name").
    *
    * @param query Searchable query text
    * @return Array of uids
@@ -108,7 +121,7 @@ export default class SearchUtility implements SearchApiIndex {
     } else {
       var tokens: Array<string> = this._tokenize(this._sanitize(query));
 
-      return this._searchIndex.search(tokens);
+      return this._searchIndex.search(tokens, this._matchAnyToken);
     }
   };
 
@@ -138,6 +151,13 @@ export default class SearchUtility implements SearchApiIndex {
    */
   setCaseSensitive(caseSensitive: boolean): void {
     this._caseSensitive = caseSensitive;
+  }
+
+  /**
+   * Sets a new match-any-token bit
+   */
+  setMatchAnyToken(matchAnyToken: boolean): void {
+    this._matchAnyToken = matchAnyToken;
   }
 
   /**
