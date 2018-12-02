@@ -2,7 +2,7 @@ Changelog
 -----
 
 #### 1.4.0
-* Added support for optional OR searches (documents matching only some of the search tokens) ([@ dlebech](https://github.com/  dlebech) - [#19](https://github.com/bvaughn/js-worker-search/pull/19))
+* Added support for optional OR searches (documents matching only some of the search tokens) ([@dlebech](https://github.com/ dlebech) - [#19](https://github.com/bvaughn/js-worker-search/pull/19))
 
 #### 1.3.0
 * Added `terminate` method to enable library users to kill the web worker ([@LrsK](https://github.com/LrsK) - [#15](https://github.com/bvaughn/js-worker-search/pull/15))
