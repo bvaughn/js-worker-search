@@ -28,20 +28,25 @@ self.addEventListener(
 
         self.postMessage({ callbackId, results });
         break;
+      case "setCaseSensitive":
+        const { caseSensitive } = data;
+
+        searchUtility.setCaseSensitive(caseSensitive);
+        break;
       case "setIndexMode":
         const { indexMode } = data;
 
         searchUtility.setIndexMode(indexMode);
         break;
+      case "setMatchAnyToken":
+        const { matchAnyToken } = data;
+
+        searchUtility.setMatchAnyToken(matchAnyToken);
+        break;
       case "setTokenizePattern":
         const { tokenizePattern } = data;
 
         searchUtility.setTokenizePattern(tokenizePattern);
-        break;
-      case "setCaseSensitive":
-        const { caseSensitive } = data;
-
-        searchUtility.setCaseSensitive(caseSensitive);
         break;
     }
   },

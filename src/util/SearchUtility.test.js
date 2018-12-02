@@ -116,15 +116,6 @@ test("SearchUtility should return documents ids only if document matches all tok
   done();
 });
 
-test("SearchUtility should return matching documents for any token, if specified", async done => {
-  const searchUtility = init({ matchAnyToken: true });
-  let ids = await searchUtility.search("first two second");
-  expect(ids.length).toBe(2);
-  expect(ids[0]).toBe(2); // The second document has most matches
-  expect(ids[1]).toBe(1);
-  done();
-});
-
 test("SearchUtility should return an empty array for query without matching documents", async done => {
   const searchUtility = init();
   const ids = await searchUtility.search("four");
@@ -242,12 +233,6 @@ test("SearchUtility should support EXACT_WORDS :indexMode", async done => {
   done();
 });
 
-test("SearchUtility should update its default :tokenizePattern when :setTokenizePattern() is called", () => {
-  const searchUtility = new SearchUtility();
-  searchUtility.setTokenizePattern(/[^a-z0-9]/);
-  expect(searchUtility.getTokenizePattern()).toEqual(/[^a-z0-9]/);
-});
-
 test("SearchUtility should update its default :caseSensitive bit when :setCaseSensitive() is called", () => {
   const searchUtility = new SearchUtility();
   expect(searchUtility.getCaseSensitive()).toBe(false);
@@ -255,14 +240,17 @@ test("SearchUtility should update its default :caseSensitive bit when :setCaseSe
   expect(searchUtility.getCaseSensitive()).toBe(true);
 });
 
-test("SearchUtility should support custom tokenizer pattern", async done => {
-  const searchUtility = init({
-    indexMode: INDEX_MODES.EXACT_WORDS,
-    tokenizePattern: /[^a-z0-9]+/
-  });
-  expect(await searchUtility.search("sexto")).toEqual([6]);
-  expect(await searchUtility.search("6o")).toEqual([6]);
-  done();
+test("SearchUtility should update its default :matchAnyToken bit when :setMatchAnyToken() is called", () => {
+  const searchUtility = new SearchUtility();
+  expect(searchUtility.getMatchAnyToken()).toBe(false);
+  searchUtility.setMatchAnyToken(true);
+  expect(searchUtility.getMatchAnyToken()).toBe(true);
+});
+
+test("SearchUtility should update its default :tokenizePattern when :setTokenizePattern() is called", () => {
+  const searchUtility = new SearchUtility();
+  searchUtility.setTokenizePattern(/[^a-z0-9]/);
+  expect(searchUtility.getTokenizePattern()).toEqual(/[^a-z0-9]/);
 });
 
 test("SearchUtility should support case sensitive search", async done => {
@@ -272,5 +260,24 @@ test("SearchUtility should support case sensitive search", async done => {
   });
   expect((await searchUtility.search("First")).length).toBe(0);
   expect(await searchUtility.search("first")).toEqual([1]);
+  done();
+});
+
+test("SearchUtility should support an OS search (match any) search", async done => {
+  const searchUtility = init({ matchAnyToken: true });
+  let ids = await searchUtility.search("first two second");
+  expect(ids.length).toBe(2);
+  expect(ids[0]).toBe(2); // The second document has most matches
+  expect(ids[1]).toBe(1);
+  done();
+});
+
+test("SearchUtility should support custom tokenizer pattern", async done => {
+  const searchUtility = init({
+    indexMode: INDEX_MODES.EXACT_WORDS,
+    tokenizePattern: /[^a-z0-9]+/
+  });
+  expect(await searchUtility.search("sexto")).toEqual([6]);
+  expect(await searchUtility.search("6o")).toEqual([6]);
   done();
 });

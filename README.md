@@ -119,6 +119,17 @@ const searchApi = new SearchApi({
 })
 ```
 
+### Partial matches
+By default, the search utility only returns documents containing every search token.
+It can be configured to return documents containing any search token.
+
+```js
+// Change search behavior from AND to OR
+const searchApi = new SearchApi({
+  matchAnyToken: true
+})
+```
+
 Changelog
 ---------
 

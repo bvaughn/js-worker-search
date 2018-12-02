@@ -13,9 +13,10 @@ class StubWorker {
 
   _indexedDocumentMap = {};
   _searchQueue = [];
-  _setIndexModeQueue = [];
-  _setTokenizePatternQueue = [];
   _setCaseSensitiveQueue = [];
+  _setIndexModeQueue = [];
+  _setMatchAnyTokenQueue = [];
+  _setTokenizePatternQueue = [];
 
   postMessage(data) {
     const { method, ...props } = data;
@@ -32,17 +33,21 @@ class StubWorker {
         const { callbackId, query } = props;
         this._searchQueue.push({ callbackId, query });
         break;
+      case "setCaseSensitive":
+        const { caseSensitive } = props;
+        this._setCaseSensitiveQueue.push({ caseSensitive });
+        break;
       case "setIndexMode":
         const { indexMode } = props;
         this._setIndexModeQueue.push({ indexMode });
         break;
+      case "setMatchAnyToken":
+        const { matchAnyToken } = props;
+        this._setMatchAnyTokenQueue.push({ matchAnyToken });
+        break;
       case "setTokenizePattern":
         const { tokenizePattern } = props;
         this._setTokenizePatternQueue.push({ tokenizePattern });
-        break;
-      case "setCaseSensitive":
-        const { caseSensitive } = props;
-        this._setCaseSensitiveQueue.push({ caseSensitive });
         break;
     }
   }
@@ -197,4 +202,13 @@ test("SearchWorkerLoader should pass the specified :caseSensitive bit to the Wor
   });
   expect(search._worker._setCaseSensitiveQueue.length).toBe(1);
   expect(search._worker._setCaseSensitiveQueue[0].caseSensitive).toBe(true);
+});
+
+test("SearchWorkerLoader should pass the specified :matchAnyToken bit to the WorkerClass", () => {
+  const search = new SearchWorkerLoader({
+    matchAnyToken: true,
+    WorkerClass: StubWorker
+  });
+  expect(search._worker._setMatchAnyTokenQueue.length).toBe(1);
+  expect(search._worker._setMatchAnyTokenQueue[0].matchAnyToken).toBe(true);
 });

@@ -14,13 +14,15 @@ export default class SearchApi {
 
   constructor(
     {
+      caseSensitive,
       indexMode,
-      tokenizePattern,
-      caseSensitive
+      matchAnyToken,
+      tokenizePattern
     }: {
+      caseSensitive?: boolean,
       indexMode?: IndexMode,
-      tokenizePattern?: RegExp,
-      caseSensitive?: boolean
+      matchAnyToken?: boolean,
+      tokenizePattern?: RegExp
     } = {}
   ) {
     // Based on https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
@@ -28,12 +30,14 @@ export default class SearchApi {
     if (typeof window !== "undefined" && window.Worker) {
       this._search = new SearchWorkerLoader({
         indexMode,
+        matchAnyToken,
         tokenizePattern,
         caseSensitive
       });
     } else {
       this._search = new SearchUtility({
         indexMode,
+        matchAnyToken,
         tokenizePattern,
         caseSensitive
       });

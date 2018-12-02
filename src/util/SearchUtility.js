@@ -15,11 +15,11 @@ type UidMap = {
  * Forked from JS search (github.com/bvaughn/js-search).
  */
 export default class SearchUtility implements SearchApiIndex {
-  _indexMode: IndexMode;
-  _tokenizePattern: RegExp;
   _caseSensitive: boolean;
+  _indexMode: IndexMode;
   _matchAnyToken: boolean;
   _searchIndex: SearchIndex;
+  _tokenizePattern: RegExp;
   _uids: UidMap;
 
   /**
@@ -32,38 +32,24 @@ export default class SearchUtility implements SearchApiIndex {
    */
   constructor(
     {
-      indexMode = INDEX_MODES.ALL_SUBSTRINGS,
-      tokenizePattern = /\s+/,
       caseSensitive = false,
-      matchAnyToken = false
+      indexMode = INDEX_MODES.ALL_SUBSTRINGS,
+      matchAnyToken = false,
+      tokenizePattern = /\s+/
     }: {
-      indexMode?: IndexMode,
-      tokenizePattern?: RegExp,
       caseSensitive?: boolean,
-      matchAnyToken?: boolean
+      indexMode?: IndexMode,
+      matchAnyToken?: boolean,
+      tokenizePattern?: RegExp
     } = {}
   ) {
-    this._indexMode = indexMode;
-    this._tokenizePattern = tokenizePattern;
     this._caseSensitive = caseSensitive;
+    this._indexMode = indexMode;
     this._matchAnyToken = matchAnyToken;
+    this._tokenizePattern = tokenizePattern;
 
     this._searchIndex = new SearchIndex();
     this._uids = {};
-  }
-
-  /**
-   * Returns a constant representing the current index mode.
-   */
-  getIndexMode(): string {
-    return this._indexMode;
-  }
-
-  /**
-   * Returns a constant representing the current tokenize pattern.
-   */
-  getTokenizePattern(): RegExp {
-    return this._tokenizePattern;
   }
 
   /**
@@ -74,10 +60,24 @@ export default class SearchUtility implements SearchApiIndex {
   }
 
   /**
+   * Returns a constant representing the current index mode.
+   */
+  getIndexMode(): string {
+    return this._indexMode;
+  }
+
+  /**
    * Returns a constant representing the current match-any-token bit.
    */
   getMatchAnyToken(): boolean {
     return this._matchAnyToken;
+  }
+
+  /**
+   * Returns a constant representing the current tokenize pattern.
+   */
+  getTokenizePattern(): RegExp {
+    return this._tokenizePattern;
   }
 
   /**
@@ -126,6 +126,13 @@ export default class SearchUtility implements SearchApiIndex {
   };
 
   /**
+   * Sets a new case-sensitive bit
+   */
+  setCaseSensitive(caseSensitive: boolean): void {
+    this._caseSensitive = caseSensitive;
+  }
+
+  /**
    * Sets a new index mode.
    * See util/constants/INDEX_MODES
    */
@@ -140,24 +147,17 @@ export default class SearchUtility implements SearchApiIndex {
   }
 
   /**
-   * Sets a new tokenize pattern (regular expression)
-   */
-  setTokenizePattern(pattern: RegExp): void {
-    this._tokenizePattern = pattern;
-  }
-
-  /**
-   * Sets a new case-sensitive bit
-   */
-  setCaseSensitive(caseSensitive: boolean): void {
-    this._caseSensitive = caseSensitive;
-  }
-
-  /**
    * Sets a new match-any-token bit
    */
   setMatchAnyToken(matchAnyToken: boolean): void {
     this._matchAnyToken = matchAnyToken;
+  }
+
+  /**
+   * Sets a new tokenize pattern (regular expression)
+   */
+  setTokenizePattern(pattern: RegExp): void {
+    this._tokenizePattern = pattern;
   }
 
   /**

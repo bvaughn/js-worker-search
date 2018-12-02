@@ -35,14 +35,16 @@ export default class SearchWorkerLoader implements SearchApiIndex {
    */
   constructor(
     {
-      indexMode,
-      tokenizePattern,
       caseSensitive,
+      indexMode,
+      matchAnyToken,
+      tokenizePattern,
       WorkerClass
     }: {
-      indexMode?: IndexMode,
-      tokenizePattern?: RegExp,
       caseSensitive?: boolean,
+      indexMode?: IndexMode,
+      matchAnyToken?: boolean,
+      tokenizePattern?: RegExp,
       WorkerClass?: Class<Worker>
     } = {}
   ) {
@@ -70,6 +72,14 @@ export default class SearchWorkerLoader implements SearchApiIndex {
       this._updateQueue({ callbackId, results });
     };
 
+    // Override default :caseSensitive bit if a specific one has been requested
+    if (caseSensitive) {
+      this._worker.postMessage({
+        method: "setCaseSensitive",
+        caseSensitive
+      });
+    }
+
     // Override default :indexMode if a specific one has been requested
     if (indexMode) {
       this._worker.postMessage({
@@ -78,19 +88,19 @@ export default class SearchWorkerLoader implements SearchApiIndex {
       });
     }
 
+    // Override default :matchAnyToken bit if a specific one has been requested
+    if (matchAnyToken) {
+      this._worker.postMessage({
+        method: "setMatchAnyToken",
+        matchAnyToken
+      });
+    }
+
     // Override default :tokenizePattern if a specific one has been requested
     if (tokenizePattern) {
       this._worker.postMessage({
         method: "setTokenizePattern",
         tokenizePattern
-      });
-    }
-
-    // Override default :caseSensitive bit if a specific one has been requested
-    if (caseSensitive) {
-      this._worker.postMessage({
-        method: "setCaseSensitive",
-        caseSensitive
       });
     }
   }
