@@ -1,25 +1,22 @@
-const path = require('path')
+const path = require("path");
 
 module.exports = {
-  devtool: 'source-map',
-  entry: [
-    './src/index.js'
-  ],
+  devtool: "source-map",
+  entry: ["./src/index.js"],
   output: {
-    path: 'dist',
-    filename: 'js-worker-search.js',
-    libraryTarget: 'commonjs2',
-    library: 'redux-search'
+    path: "dist",
+    filename: "js-worker-search.js",
+    libraryTarget: "commonjs2",
+    library: "redux-search"
   },
-  plugins: [
-  ],
+  plugins: [],
   module: {
     loaders: [
       {
         test: /\.js$/,
-        loader: 'babel',
-        include: path.join(__dirname, 'src')
+        loader: "babel",
+        include: path.join(__dirname, "src")
       }
     ]
   }
-}
+};
