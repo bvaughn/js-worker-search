@@ -1,15 +1,22 @@
 const path = require("path");
+const webpack = require("webpack");
 
 module.exports = {
-  devtool: "source-map",
-  entry: ["./src/index.js"],
+  entry: {
+    "js-worker-search": "./src/index.js"
+  },
   output: {
     path: "dist",
-    filename: "js-worker-search.js",
+    filename: "[name].js",
     libraryTarget: "commonjs2",
     library: "redux-search"
   },
-  plugins: [],
+  plugins: [
+    new webpack.SourceMapDevToolPlugin({
+      exclude: /.*worker\.js$/,
+      filename: "[name].js.map"
+    })
+  ],
   module: {
     loaders: [
       {
