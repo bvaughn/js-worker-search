@@ -20,3 +20,4 @@ node_modules
 npm-debug.log
 build
 .watchmanconfig
+.vscode
