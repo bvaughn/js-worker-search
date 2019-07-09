@@ -1,6 +1,9 @@
 Changelog
 -----
 
+#### 1.4.1
+* Removed source maps from inline worker blob to avoid errors ([@jahed](https://github.com/jahed) - [#23](https://github.com/bvaughn/js-worker-search/pull/23))
+
 #### 1.4.0
 * Added support for optional OR searches (documents matching only some of the search tokens) ([@dlebech](https://github.com/dlebech) - [#19](https://github.com/bvaughn/js-worker-search/pull/19))
 
