@@ -17,7 +17,7 @@
     "prebuild": "yarn run lint",
     "prepublish": "yarn run build",
     "pretest": "yarn run flow && yarn run prettier && yarn run lint",
-    "prettier": "prettier --write 'src/**/*.js'",
+    "prettier": "prettier --write '{src/**,.}/*.js'",
     "start": "watch 'clear && yarn run lint -s && yarn run test -s' src",
     "test": "jest"
   },
