@@ -47,13 +47,13 @@ const documentH = fromJS({
 });
 
 const documents = [
-  //documentA,
-  //documentB,
-  //documentC,
-  //documentD,
-  //documentE,
-  //documentF,
-  //documentG,
+  documentA,
+  documentB,
+  documentC,
+  documentD,
+  documentE,
+  documentF,
+  documentG,
   documentH
 ];
 
@@ -290,22 +290,20 @@ test("SearchUtility should support custom tokenizer pattern", async done => {
   expect(await searchUtility.search("6o")).toEqual([6]);
   done();
 });
-test.only(
-  "SearchUtility should use maxSubstringLength for ALL_SUBSTRINGS index mode",
-  async done => {
-    const searchUtility = init({
-      indexMode: INDEX_MODES.ALL_SUBSTRINGS,
-      maxSubstringLength: 20
-    });
-    expect(
-      (await searchUtility.search("Verylongstringwithoutdelimiter")).length
-    ).toBe(0);
-    expect(await searchUtility.search("verylong")).toEqual([8]);
-    expect(await searchUtility.search("without")).toEqual([8]);
-    expect(await searchUtility.search("delimiter")).toEqual([8]);
-    done();
-  }
-);
+test("SearchUtility should use maxSubstringLength for ALL_SUBSTRINGS index mode", async done => {
+  const searchUtility = init({
+    indexMode: INDEX_MODES.ALL_SUBSTRINGS,
+    maxSubstringLength: 10
+  });
+  expect(
+    (await searchUtility.search("Verylongstringwithoutdelimiter")).length
+  ).toBe(0);
+  expect(await searchUtility.search("verylong")).toEqual([8]);
+  expect(await searchUtility.search("without")).toEqual([8]);
+  expect(await searchUtility.search("delimiter")).toEqual([8]);
+  expect((await searchUtility.search("withoutdelimiter")).length).toBe(0);
+  done();
+});
 test("SearchUtility should ignore maxSubstringLength for PREFIXES index mode", async done => {
   const searchUtility = init({
     indexMode: INDEX_MODES.PREFIXES,

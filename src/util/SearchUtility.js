@@ -85,7 +85,7 @@ export default class SearchUtility implements SearchApiIndex {
   }
 
   /**
-   * Returns a constant representing the current tokenize pattern.
+   * Returns the maximum length a substring will be for ALL_SUBSTRINGS index mode.
    */
   getMaxSubstringLength(): number {
     return this._maxSubstringLength;
@@ -172,7 +172,7 @@ export default class SearchUtility implements SearchApiIndex {
   }
 
   /**
-   * Sets a new tokenize pattern (regular expression)
+   * Sets the new max substring length for ALL_SUBSTRINGS index mode.
    */
   setMaxSubstringLength(maxSubstringLength: number): void {
     this._maxSubstringLength = maxSubstringLength;
