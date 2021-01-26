@@ -40,6 +40,11 @@ const documentG = fromJS({
   name: "Seven",
   description: "ქართული ენა"
 });
+const documentH = fromJS({
+  id: 8,
+  name: "Eight",
+  description: "Verylongstringwithoutdelimiter"
+});
 
 const documents = [
   documentA,
@@ -48,7 +53,8 @@ const documents = [
   documentD,
   documentE,
   documentF,
-  documentG
+  documentG,
+  documentH
 ];
 
 function init(
@@ -56,19 +62,22 @@ function init(
     indexMode,
     tokenizePattern,
     caseSensitive,
-    matchAnyToken
+    matchAnyToken,
+    maxDepth
   }: {
     indexMode?: IndexMode,
     tokenizePattern?: RegExp,
     caseSensitive?: boolean,
-    matchAnyToken?: boolean
+    matchAnyToken?: boolean,
+    maxDepth?: number
   } = {}
 ) {
   const searchUtility = new SearchUtility({
     indexMode,
     tokenizePattern,
     caseSensitive,
-    matchAnyToken
+    matchAnyToken,
+    maxDepth
   });
 
   documents.forEach(doc => {
@@ -279,5 +288,14 @@ test("SearchUtility should support custom tokenizer pattern", async done => {
   });
   expect(await searchUtility.search("sexto")).toEqual([6]);
   expect(await searchUtility.search("6o")).toEqual([6]);
+  done();
+});
+test("SearchUtility should support max depth value", async done => {
+  const searchUtility = init({
+    indexMode: INDEX_MODES.EXACT_WORDS,
+    maxDepth: 10
+  });
+  expect((await searchUtility.search("Verylongstringwithout")).length).toBe(0);
+  expect(await searchUtility.search("Verylongst")).toEqual([8]);
   done();
 });

@@ -39,12 +39,14 @@ export default class SearchWorkerLoader implements SearchApiIndex {
       indexMode,
       matchAnyToken,
       tokenizePattern,
+      maxDepth,
       WorkerClass
     }: {
       caseSensitive?: boolean,
       indexMode?: IndexMode,
       matchAnyToken?: boolean,
       tokenizePattern?: RegExp,
+      maxDepth?: number,
       WorkerClass?: Class<Worker>
     } = {}
   ) {
@@ -101,6 +103,14 @@ export default class SearchWorkerLoader implements SearchApiIndex {
       this._worker.postMessage({
         method: "setTokenizePattern",
         tokenizePattern
+      });
+    }
+
+    // Override default :maxDepth if a specific one has been requested
+    if (maxDepth) {
+      this._worker.postMessage({
+        method: "setMaxDepth",
+        maxDepth
       });
     }
   }

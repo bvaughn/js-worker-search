@@ -1,5 +1,6 @@
 [ignore]
 .*/benchmarks/.*
+.*/node_modules/immutable/dist/immutable.js.flow
 
 [include]
 src/**/*.js

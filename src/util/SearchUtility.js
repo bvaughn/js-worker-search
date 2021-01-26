@@ -21,6 +21,7 @@ export default class SearchUtility implements SearchApiIndex {
   _searchIndex: SearchIndex;
   _tokenizePattern: RegExp;
   _uids: UidMap;
+  _maxDepth: number;
 
   /**
    * Constructor.
@@ -35,18 +36,21 @@ export default class SearchUtility implements SearchApiIndex {
       caseSensitive = false,
       indexMode = INDEX_MODES.ALL_SUBSTRINGS,
       matchAnyToken = false,
-      tokenizePattern = /\s+/
+      tokenizePattern = /\s+/,
+      maxDepth = Infinity
     }: {
       caseSensitive?: boolean,
       indexMode?: IndexMode,
       matchAnyToken?: boolean,
-      tokenizePattern?: RegExp
+      tokenizePattern?: RegExp,
+      maxDepth?: number
     } = {}
   ) {
     this._caseSensitive = caseSensitive;
     this._indexMode = indexMode;
     this._matchAnyToken = matchAnyToken;
     this._tokenizePattern = tokenizePattern;
+    this._maxDepth = maxDepth;
 
     this._searchIndex = new SearchIndex();
     this._uids = {};
@@ -78,6 +82,13 @@ export default class SearchUtility implements SearchApiIndex {
    */
   getTokenizePattern(): RegExp {
     return this._tokenizePattern;
+  }
+
+  /**
+   * Returns a constant representing the current tokenize pattern.
+   */
+  getMaxDepth(): number {
+    return this._maxDepth;
   }
 
   /**
@@ -161,6 +172,13 @@ export default class SearchUtility implements SearchApiIndex {
   }
 
   /**
+   * Sets a new tokenize pattern (regular expression)
+   */
+  setMaxDepth(maxDepth: number): void {
+    this._maxDepth = maxDepth;
+  }
+
+  /**
    *  Added to make class adhere to interface. Add cleanup code as needed.
    */
   terminate = () => {};
@@ -240,6 +258,13 @@ export default class SearchUtility implements SearchApiIndex {
    * @private
    */
   _tokenize(text: string): Array<string> {
-    return text.split(this._tokenizePattern).filter(text => text); // Remove empty tokens
+    const tokens = text.split(this._tokenizePattern).filter(text => text); // Remove empty tokens
+    if (this._maxDepth === Infinity) {
+      return tokens;
+    }
+
+    // RegExp in the format of /(.{n})/ to chunk strings.
+    const regExp = new RegExp(`(.{${this._maxDepth}})`);
+    return tokens.map(token => token.split(regExp)).flat().filter(text => text);
   }
 }

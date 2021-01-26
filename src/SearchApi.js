@@ -17,12 +17,14 @@ export default class SearchApi {
       caseSensitive,
       indexMode,
       matchAnyToken,
-      tokenizePattern
+      tokenizePattern,
+      maxDepth
     }: {
       caseSensitive?: boolean,
       indexMode?: IndexMode,
       matchAnyToken?: boolean,
-      tokenizePattern?: RegExp
+      tokenizePattern?: RegExp,
+      maxDepth?: number
     } = {}
   ) {
     // Based on https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
@@ -32,14 +34,16 @@ export default class SearchApi {
         indexMode,
         matchAnyToken,
         tokenizePattern,
-        caseSensitive
+        caseSensitive,
+        maxDepth
       });
     } else {
       this._search = new SearchUtility({
         indexMode,
         matchAnyToken,
         tokenizePattern,
-        caseSensitive
+        caseSensitive,
+        maxDepth
       });
     }
   }

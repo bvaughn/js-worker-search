@@ -48,6 +48,11 @@ self.addEventListener(
 
         searchUtility.setTokenizePattern(tokenizePattern);
         break;
+      case "setMaxDepth":
+        const { maxDepth } = data;
+
+        searchUtility.setMaxDepth(maxDepth);
+        break;
     }
   },
   false
