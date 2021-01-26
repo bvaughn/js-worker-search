@@ -49,9 +49,9 @@ class StubWorker {
         const { tokenizePattern } = props;
         this._setTokenizePatternQueue.push({ tokenizePattern });
         break;
-      case "setMaxDepth":
-        const { maxDepth } = props;
-        this._setTokenizePatternQueue.push({ maxDepth });
+      case "setMaxSubstringLength":
+        const { maxSubstringLength } = props;
+        this._setTokenizePatternQueue.push({ maxSubstringLength });
         break;
     }
   }
@@ -219,9 +219,11 @@ test("SearchWorkerLoader should pass the specified :matchAnyToken bit to the Wor
 
 test("SearchWorkerLoader should pass the specified :maxDpetgh to the WorkerClass", () => {
   const search = new SearchWorkerLoader({
-    maxDepth: 100,
+    maxSubstringLength: 100,
     WorkerClass: StubWorker
   });
   expect(search._worker._setTokenizePatternQueue.length).toBe(1);
-  expect(search._worker._setTokenizePatternQueue[0].maxDepth).toBe(100);
+  expect(search._worker._setTokenizePatternQueue[0].maxSubstringLength).toBe(
+    100
+  );
 });

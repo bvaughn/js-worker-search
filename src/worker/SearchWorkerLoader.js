@@ -39,14 +39,14 @@ export default class SearchWorkerLoader implements SearchApiIndex {
       indexMode,
       matchAnyToken,
       tokenizePattern,
-      maxDepth,
+      maxSubstringLength,
       WorkerClass
     }: {
       caseSensitive?: boolean,
       indexMode?: IndexMode,
       matchAnyToken?: boolean,
       tokenizePattern?: RegExp,
-      maxDepth?: number,
+      maxSubstringLength?: number,
       WorkerClass?: Class<Worker>
     } = {}
   ) {
@@ -106,11 +106,11 @@ export default class SearchWorkerLoader implements SearchApiIndex {
       });
     }
 
-    // Override default :maxDepth if a specific one has been requested
-    if (maxDepth) {
+    // Override default :maxSubstringLength if a specific one has been requested
+    if (maxSubstringLength) {
       this._worker.postMessage({
-        method: "setMaxDepth",
-        maxDepth
+        method: "setMaxSubstringLength",
+        maxSubstringLength
       });
     }
   }

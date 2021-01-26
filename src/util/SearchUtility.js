@@ -21,7 +21,7 @@ export default class SearchUtility implements SearchApiIndex {
   _searchIndex: SearchIndex;
   _tokenizePattern: RegExp;
   _uids: UidMap;
-  _maxDepth: number;
+  _maxSubstringLength: number;
 
   /**
    * Constructor.
@@ -37,20 +37,20 @@ export default class SearchUtility implements SearchApiIndex {
       indexMode = INDEX_MODES.ALL_SUBSTRINGS,
       matchAnyToken = false,
       tokenizePattern = /\s+/,
-      maxDepth = Infinity
+      maxSubstringLength = Infinity
     }: {
       caseSensitive?: boolean,
       indexMode?: IndexMode,
       matchAnyToken?: boolean,
       tokenizePattern?: RegExp,
-      maxDepth?: number
+      maxSubstringLength?: number
     } = {}
   ) {
     this._caseSensitive = caseSensitive;
     this._indexMode = indexMode;
     this._matchAnyToken = matchAnyToken;
     this._tokenizePattern = tokenizePattern;
-    this._maxDepth = maxDepth;
+    this._maxSubstringLength = maxSubstringLength;
 
     this._searchIndex = new SearchIndex();
     this._uids = {};
@@ -87,8 +87,8 @@ export default class SearchUtility implements SearchApiIndex {
   /**
    * Returns a constant representing the current tokenize pattern.
    */
-  getMaxDepth(): number {
-    return this._maxDepth;
+  getMaxSubstringLength(): number {
+    return this._maxSubstringLength;
   }
 
   /**
@@ -174,8 +174,8 @@ export default class SearchUtility implements SearchApiIndex {
   /**
    * Sets a new tokenize pattern (regular expression)
    */
-  setMaxDepth(maxDepth: number): void {
-    this._maxDepth = maxDepth;
+  setMaxSubstringLength(maxSubstringLength: number): void {
+    this._maxSubstringLength = maxSubstringLength;
   }
 
   /**
@@ -213,7 +213,11 @@ export default class SearchUtility implements SearchApiIndex {
       for (let i = 0, length = token.length; i < length; ++i) {
         let substring: string = "";
 
-        for (let j = i; j < length; ++j) {
+        const maxSubstringLength = Math.min(
+          token.length,
+          i + this._maxSubstringLength
+        );
+        for (let j = i; j < maxSubstringLength; ++j) {
           substring += token.charAt(j);
           expandedTokens.push(substring);
         }
@@ -258,13 +262,6 @@ export default class SearchUtility implements SearchApiIndex {
    * @private
    */
   _tokenize(text: string): Array<string> {
-    const tokens = text.split(this._tokenizePattern).filter(text => text); // Remove empty tokens
-    if (this._maxDepth === Infinity) {
-      return tokens;
-    }
-
-    // RegExp in the format of /(.{n})/ to chunk strings.
-    const regExp = new RegExp(`(.{${this._maxDepth}})`);
-    return tokens.map(token => token.split(regExp)).flat().filter(text => text);
+    return text.split(this._tokenizePattern).filter(text => text); // Remove empty tokens
   }
 }

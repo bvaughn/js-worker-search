@@ -47,13 +47,13 @@ const documentH = fromJS({
 });
 
 const documents = [
-  documentA,
-  documentB,
-  documentC,
-  documentD,
-  documentE,
-  documentF,
-  documentG,
+  //documentA,
+  //documentB,
+  //documentC,
+  //documentD,
+  //documentE,
+  //documentF,
+  //documentG,
   documentH
 ];
 
@@ -63,13 +63,13 @@ function init(
     tokenizePattern,
     caseSensitive,
     matchAnyToken,
-    maxDepth
+    maxSubstringLength
   }: {
     indexMode?: IndexMode,
     tokenizePattern?: RegExp,
     caseSensitive?: boolean,
     matchAnyToken?: boolean,
-    maxDepth?: number
+    maxSubstringLength?: number
   } = {}
 ) {
   const searchUtility = new SearchUtility({
@@ -77,7 +77,7 @@ function init(
     tokenizePattern,
     caseSensitive,
     matchAnyToken,
-    maxDepth
+    maxSubstringLength
   });
 
   documents.forEach(doc => {
@@ -290,12 +290,39 @@ test("SearchUtility should support custom tokenizer pattern", async done => {
   expect(await searchUtility.search("6o")).toEqual([6]);
   done();
 });
-test("SearchUtility should support max depth value", async done => {
+test.only(
+  "SearchUtility should use maxSubstringLength for ALL_SUBSTRINGS index mode",
+  async done => {
+    const searchUtility = init({
+      indexMode: INDEX_MODES.ALL_SUBSTRINGS,
+      maxSubstringLength: 20
+    });
+    expect(
+      (await searchUtility.search("Verylongstringwithoutdelimiter")).length
+    ).toBe(0);
+    expect(await searchUtility.search("verylong")).toEqual([8]);
+    expect(await searchUtility.search("without")).toEqual([8]);
+    expect(await searchUtility.search("delimiter")).toEqual([8]);
+    done();
+  }
+);
+test("SearchUtility should ignore maxSubstringLength for PREFIXES index mode", async done => {
+  const searchUtility = init({
+    indexMode: INDEX_MODES.PREFIXES,
+    maxSubstringLength: 10
+  });
+  expect(await searchUtility.search("Verylongstringwithout")).toEqual([8]);
+  expect((await searchUtility.search("Verylongst")).length).toBe(1);
+  done();
+});
+test("SearchUtility should ignore maxSubstringLength for EXACT_WORDS index mode", async done => {
   const searchUtility = init({
     indexMode: INDEX_MODES.EXACT_WORDS,
-    maxDepth: 10
+    maxSubstringLength: 10
   });
-  expect((await searchUtility.search("Verylongstringwithout")).length).toBe(0);
-  expect(await searchUtility.search("Verylongst")).toEqual([8]);
+  expect(await searchUtility.search("Verylongstringwithoutdelimiter")).toEqual([
+    8
+  ]);
+  expect((await searchUtility.search("Verylongst")).length).toBe(0);
   done();
 });

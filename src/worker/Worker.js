@@ -48,10 +48,10 @@ self.addEventListener(
 
         searchUtility.setTokenizePattern(tokenizePattern);
         break;
-      case "setMaxDepth":
-        const { maxDepth } = data;
+      case "setMaxSubstringLength":
+        const { maxSubstringLength } = data;
 
-        searchUtility.setMaxDepth(maxDepth);
+        searchUtility.setMaxSubstringLength(maxSubstringLength);
         break;
     }
   },
