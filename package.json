@@ -62,16 +62,16 @@
     "eslint-config-prettier": "^2.3.0",
     "eslint-plugin-flowtype": "^2.35.0",
     "eslint-plugin-prettier": "^2.1.2",
+    "flow-bin": "^0.50.0",
     "immutable": "^3.8.1",
     "jest": "^22.1.1",
     "prettier": "^1.5.3",
     "rimraf": "^2.5.0",
     "watch": "^1.0.2",
     "webpack": "^1.12.9",
-    "worker-loader": "^0.8.1",
-    "flow-bin": "^0.50.0"
+    "worker-loader": "^0.8.1"
   },
   "dependencies": {
-    "uuid": "^2.0.1"
+    "uuid": "^8.3.2"
   }
 }
