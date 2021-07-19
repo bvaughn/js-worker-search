@@ -1,6 +1,6 @@
 /** @flow */
 
-import uuid from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 import type { IndexMode } from "../util";
 import type { SearchApiIndex } from "../types";
@@ -135,7 +135,7 @@ export default class SearchWorkerLoader implements SearchApiIndex {
    */
   search = (query: string): Promise<Array<any>> => {
     return new Promise((resolve: ResolveFn, reject: RejectFn) => {
-      const callbackId = uuid.v4();
+      const callbackId = uuidv4();
       const data = {
         callbackId,
         complete: false,

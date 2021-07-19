@@ -1,6 +1,6 @@
 {
   "name": "js-worker-search",
-  "version": "1.4.1",
+  "version": "2.0.0",
   "description": "JavaScript client-side search API with web-worker support",
   "author": "Brian Vaughn (brian.david.vaughn@gmail.com)",
   "license": "MIT",
@@ -72,6 +72,6 @@
     "flow-bin": "^0.50.0"
   },
   "dependencies": {
-    "uuid": "^2.0.1"
+    "uuid": "^8.3.2"
   }
 }
