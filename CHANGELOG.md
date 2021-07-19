@@ -1,6 +1,8 @@
 Changelog
 -----
-
+#### 2.0.0
+* Bumped uuid from 2.0.1 to 8.3.2 to support ES modules 
+  
 #### 1.4.1
 * Removed source maps from inline worker blob to avoid errors ([@jahed](https://github.com/jahed) - [#23](https://github.com/bvaughn/js-worker-search/pull/23))
 
