@@ -1,10 +1,13 @@
-js-worker-search
------
+# js-worker-search
 
 ![NPM version](https://img.shields.io/npm/v/js-worker-search.svg)
 ![NPM license](https://img.shields.io/npm/l/js-worker-search.svg)
 ![NPM total downloads](https://img.shields.io/npm/dt/js-worker-search.svg)
 ![NPM monthly downloads](https://img.shields.io/npm/dm/js-worker-search.svg)
+
+---
+### 🎉 [Become a sponsor](https://github.com/sponsors/bvaughn/) or ☕ [Buy me a coffee](http://givebrian.coffee/)
+---
 
 Full text client-side search based on [js-search](https://github.com/bvaughn/js-search) but with added web-worker support for better performance.
 
